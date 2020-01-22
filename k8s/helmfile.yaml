@@ -19,7 +19,10 @@ releases:
     chart: stable/postgresql
     namespace: core
     values:
-      - postgresqlUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
+      # Hasura requires superuser to create extension.
+      # This is "postgres" by default.
+      # So do not provide another username
+      # - postgresqlUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
       - postgresqlPassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
       - postgresqlDatabase: {{ requiredEnv "POSTGRES_DATABASE" }}
       - service:
@@ -27,3 +30,14 @@ releases:
       - extraEnv: |
           - name: PGTZ
             value: {{ requiredEnv "POSTGRES_TIMEZONE" }}
+  - name: hasura
+    chart: ./charts/hasura
+    namespace: core
+    values:
+      - adminSecret: {{ requiredEnv "HASURA_GRAPHQL_ADMIN_SECRET" }}
+      - databaseUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
+      - databasePassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
+      - databaseEndpointIp: {{ requiredEnv "POSTGRES_ENDPOINT_IP" }}
+      - databaseEndpointPort: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
+      - databaseDatabase: {{ requiredEnv "POSTGRES_DATABASE" }}
+      - logTypes: {{ requiredEnv "HASURA_GRAPHQL_ENABLED_LOG_TYPES"}}
