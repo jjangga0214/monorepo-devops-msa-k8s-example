@@ -11,13 +11,15 @@ releases:
   - name: base
     chart: ./charts/base
     values:
-      - ./values/main.yaml
+      - namespace: {{ requiredEnv "NAMESPACE" }}
   - name: api
     chart: ./charts/api
-    namespace: core
+    namespace: {{ requiredEnv "NAMESPACE" }}
+    values:
+      - ./values/api.yaml
   - name: postgres
     chart: stable/postgresql
-    namespace: core
+    namespace: {{ requiredEnv "NAMESPACE" }}
     values:
       # Hasura requires superuser to create extension.
       # This is "postgres" by default.
@@ -32,12 +34,14 @@ releases:
             value: {{ requiredEnv "POSTGRES_TIMEZONE" }}
   - name: hasura
     chart: ./charts/hasura
-    namespace: core
+    namespace: {{ requiredEnv "NAMESPACE" }}
     values:
+      - ./values/local/hasura.yaml
       - adminSecret: {{ requiredEnv "HASURA_GRAPHQL_ADMIN_SECRET" }}
-      - databaseUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
-      - databasePassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
-      - databaseEndpointIp: {{ requiredEnv "POSTGRES_ENDPOINT_IP" }}
-      - databaseEndpointPort: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
-      - databaseDatabase: {{ requiredEnv "POSTGRES_DATABASE" }}
-      - logTypes: {{ requiredEnv "HASURA_GRAPHQL_ENABLED_LOG_TYPES"}}
+      - database:
+          username: {{ requiredEnv "POSTGRES_USERNAME" }}
+          password: {{ requiredEnv "POSTGRES_PASSWORD" }}
+          endpoint:
+            ip: {{ requiredEnv "POSTGRES_ENDPOINT_IP" }}
+            port: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
+          database: {{ requiredEnv "POSTGRES_DATABASE" }}

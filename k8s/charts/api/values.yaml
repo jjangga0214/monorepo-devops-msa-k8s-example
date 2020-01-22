@@ -2,3 +2,6 @@ replicas: 1
 name: api
 service:
   type: ClusterIP
+image:
+  registry: docker.io
+  repository: jjangga0214/api

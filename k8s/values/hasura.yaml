@@ -1,0 +1,6 @@
+console:
+  enabled: true
+log:
+  types: "startup,webhook-log,websocket-log,query-log"
+image:
+  tag: v1.0.0

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.name }}
-        image: hasura/graphql-engine:v1.0.0
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
         - name: HASURA_GRAPHQL_DATABASE_URL
           valueFrom:
@@ -31,9 +31,15 @@ spec:
               name: {{ .Values.name }}
               key: adminSecret
         - name: HASURA_GRAPHQL_ENABLE_CONSOLE
-          value: "true"
+          valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.name }}
+                key: consoleEnabled
         - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
-          value: {{ .Values.logTypes }}
+          valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.name }}
+                key: logTypes
         ports:
         - containerPort: 8080
           protocol: TCP

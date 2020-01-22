@@ -2,3 +2,10 @@ name: hasura
 replicas: 1
 service:
   type: ClusterIP
+image:
+  registry: docker.io
+  repository: hasura/graphql-engine
+console:
+  enabled: true
+log:
+  types: "startup,http-log,webhook-log,websocket-log,query-log"
