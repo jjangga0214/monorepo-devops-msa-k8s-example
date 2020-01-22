@@ -1,0 +1,16 @@
+{
+  "name": "build-helper",
+  "version": "1.0.0",
+  "description": "A helper for build package in monorepo",
+  "scripts": {
+    "prune": "ts-node --transpile-only src/prune.ts",
+    "clean": "ts-node --transpile-only src/clean.ts"
+  },
+  "private": true,
+  "dependencies": {
+    "del": "^5.1.0",
+    "lerna": "^3.20.2",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}

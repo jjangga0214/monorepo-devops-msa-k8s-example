@@ -1,0 +1,30 @@
+{
+  "name": "@jjangga0214/hello",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "_moduleAliases": {
+    "~hello": "dist"
+  },
+  "scripts": {
+    "postinstall": "shx mkdir -p dist && link-module-alias",
+    "build": "tsc --build tsconfig.build.json && link-module-alias",
+    "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf coverage *.log junit.xml dist && jest --clearCache",
+    "test": "jest",
+    "test:unit": "jest test/unit",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
+    "coverage": "jest --coverage",
+    "coverage:show": "live-server coverage/lcov-report",
+    "dev": "dotenv -e ../../.env -- ts-node-dev -r tsconfig-paths/register src/index.ts"
+  },
+  "dependencies": {
+    "link-module-alias": "^1.2.0",
+    "shx": "^0.3.2"
+  }
+}

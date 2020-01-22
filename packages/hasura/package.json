@@ -1,0 +1,18 @@
+{
+  "name": "@jjangga0214/hasura",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "yarn dev",
+    "_": "dotenv -e ../../.env -e .env --",
+    "dev": "yarn _ docker-compose up -d",
+    "dev:debug": "yarn _ docker-compose up",
+    "down": "yarn _ docker-compose down",
+    "down:clean": "yarn _ docker-compose down --volumes",
+    "hasura:_": "yarn _ hasura --project .",
+    "console": "yarn hasura:_ console",
+    "migrate": "yarn hasura:_ migrate",
+    "apply": "yarn hasura:_ migrate apply",
+    "rollback": "yarn hasura:_ migrate apply --down"
+  }
+}

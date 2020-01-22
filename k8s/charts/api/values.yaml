@@ -1,0 +1,4 @@
+replicas: 1
+name: api
+service:
+  type: LoadBalancer

@@ -1,0 +1,29 @@
+# Chart repositories used from within this state file
+#
+# Use `helm-s3` and `helm-git` and whatever Helm Downloader plugins
+# to use repositories other than the official repository or one backend by chartmuseum.
+repositories:
+  # To use official "stable" charts a.k.a https://github.com/helm/charts/tree/master/stable
+  - name: stable
+    url: https://kubernetes-charts.storage.googleapis.com
+
+releases:
+  - name: base
+    chart: ./charts/base
+    values:
+      - ./values/main.yaml
+  - name: api
+    chart: ./charts/api
+    namespace: core
+  - name: postgres
+    chart: stable/postgresql
+    namespace: core
+    values:
+      - postgresqlUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
+      - postgresqlPassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
+      - postgresqlDatabase: {{ requiredEnv "POSTGRES_DATABASE" }}
+      - service:
+          port: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
+      - extraEnv: |
+          - name: PGTZ
+            value: {{ requiredEnv "POSTGRES_TIMEZONE" }}
