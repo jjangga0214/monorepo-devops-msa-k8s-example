@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
 import { delegateToSchema } from 'graphql-tools'
 import createRemoteSchema from './remote-schema'
@@ -14,7 +14,7 @@ async function main() {
       // Ensure the root queries of this schema show up the combined schema
       extend: true,
     },
-    User: {
+    user: {
       // extend Product {
       extend: true,
       // Product @key(fields: "id") {
@@ -50,3 +50,5 @@ async function main() {
       console.log(`🚀 Hasura Transformer is ready at ${url}`)
     })
 }
+
+main()

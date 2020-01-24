@@ -10,7 +10,7 @@
   "scripts": {
     "pkg": "yarn workspace @jjangga0214/$PACKAGE",
     "start": "lerna run --parallel start",
-    "dev": "lerna run --parallel dev --scope '{@jjangga0214/api,@jjangga0214/hasura}'",
+    "dev": "lerna run --parallel dev --scope '{@jjangga0214/api,@jjangga0214/hasura,@jjangga0214/hasura-transformer}'",
     "build": "lerna run --parallel build",
     "build:fresh": "yarn clean && yarn build",
     "build:image": "cross-env DOCKER_BUILDKIT=1 docker build --build-arg PACKAGE=$PACKAGE -t $IMAGE_REGISTRY/$PACKAGE:$IMAGE_TAG .",
