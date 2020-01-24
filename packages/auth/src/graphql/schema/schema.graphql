@@ -3,6 +3,8 @@ type auth_payload {
   user: user!
 }
 
+scalar uuid
+
 extend type user @key(fields: "id") {
   id: uuid! @external
 }
@@ -12,5 +14,5 @@ extend type Query {
 }
 
 extend type Mutation {
-  login: auth_payload!
+  login(username: String!, password: String!): auth_payload!
 }
