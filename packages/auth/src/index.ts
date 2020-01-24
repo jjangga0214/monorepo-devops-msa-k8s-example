@@ -19,7 +19,7 @@ const resolvers = {
   Mutation: {
     login: async (_parent, args) => {
       const res = await hasuraTransformerClient.request(print(GET_USER), args)
-      if (res && res.user && res.user.length === 1) {
+      if (res.user && res.user.length === 1) {
         return {
           token: '',
           user: { __typename: 'user', id: res.user[0].id },
