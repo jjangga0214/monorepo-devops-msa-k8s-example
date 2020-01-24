@@ -44,7 +44,7 @@ async function main() {
     schema: federationSchema,
   })
     .listen({
-      port: process.env.HASURA_TRANSFORMER_ENDPOINT_PORT,
+      port: process.env.PORT || process.env.HASURA_TRANSFORMER_ENDPOINT_PORT,
     })
     .then(({ url }) => {
       console.log(`🚀 Hasura Transformer is ready at ${url}`)
