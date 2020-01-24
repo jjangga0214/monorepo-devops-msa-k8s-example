@@ -54,8 +54,7 @@ async function main() {
     ]),
     context: ({ req }) => {
       // gateway sends X-User-Id
-      const userId =
-        req.headers['X-User-Id'] || '7f692cce-4f30-4b36-a4ba-665390bd4cb3'
+      const userId = req.headers['X-User-Id']
       // add the user to the context
       return { user: userId ? { id: userId } : null }
     },
