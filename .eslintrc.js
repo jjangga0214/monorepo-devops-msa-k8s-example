@@ -56,6 +56,7 @@ module.exports = {
         ...common.rules,
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/member-delimiter-style': 'off',
+        '@typescript-eslint/camelcase': 'off',
       },
       settings: {
         'import/resolver': {
