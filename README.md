@@ -1,4 +1,4 @@
-# TypeScript + Yarn Workspace + Lerna + Hasura Monorepo Boilerplate
+# Monorepo, MSA, DevOps
 
 ## Monorepo structure, workflow, and configuration
 
