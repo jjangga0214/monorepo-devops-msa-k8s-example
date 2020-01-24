@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   postgres:
@@ -29,14 +29,14 @@ services:
     volumes:
       - ./migrations:/hasura-migrations
     depends_on:
-      - "postgres"
+      - 'postgres'
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: "postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}"
+      HASURA_GRAPHQL_DATABASE_URL: 'postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE}'
       HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE}
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: ${HASURA_GRAPHQL_ENABLED_LOG_TYPES}
       API_ENDPOINT: ${REMOTE_SCHEMA_API_ENDPOINT}
       ## uncomment next line to set an admin secret
-      # HASURA_GRAPHQL_ADMIN_SECRET: '${HASURA_GRAPHQL_ADMIN_SECRET}'
+      HASURA_GRAPHQL_ADMIN_SECRET: '${HASURA_GRAPHQL_ADMIN_SECRET}'
 volumes:
   postgres_data:
