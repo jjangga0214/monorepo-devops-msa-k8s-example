@@ -1,0 +1,16 @@
+type auth_payload {
+  token: String!
+  user: user!
+}
+
+extend type user @key(fields: "id") {
+  id: uuid! @external
+}
+
+extend type Query {
+  me: user!
+}
+
+extend type Mutation {
+  login: auth_payload!
+}

@@ -20,7 +20,7 @@ const server = new GraphQLServer({
 
 server.start(
   {
-    port: process.env.PORT || process.env.API_ENDPOINT_PORT,
+    port: process.env.PORT || process.env.API_ENDPOINT_PORT || 8080,
   },
   () => console.log(`@jjangga0214/api is running.`),
 )
