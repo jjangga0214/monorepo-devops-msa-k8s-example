@@ -9,7 +9,7 @@
     "dist"
   ],
   "_moduleAliases": {
-    "~api": "dist"
+    "~hasura-transformer": "dist"
   },
   "scripts": {
     "postinstall": "shx mkdir -p dist",
