@@ -8,11 +8,11 @@
     "dev": "yarn _ docker-compose up -d",
     "dev:debug": "yarn _ docker-compose up",
     "down": "yarn _ docker-compose down",
-    "down:clean": "yarn _ docker-compose down --volumes",
-    "hasura:_": "yarn _ hasura --project .",
-    "console": "yarn hasura:_ console",
-    "migrate": "yarn hasura:_ migrate",
-    "apply": "yarn hasura:_ migrate apply",
-    "rollback": "yarn hasura:_ migrate apply --down"
+    "clear": "yarn _ docker-compose down --volumes",
+    "hasura": "yarn _ hasura --project .",
+    "console": "yarn hasura console",
+    "migrate": "yarn hasura migrate",
+    "apply": "yarn hasura migrate apply",
+    "rollback": "yarn hasura migrate apply --down"
   }
 }
