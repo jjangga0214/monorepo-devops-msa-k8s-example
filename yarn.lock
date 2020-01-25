@@ -22,6 +22,25 @@
     core-js "^3.4.0"
     lodash.xorby "^4.7.0"
 
+"@apollo/gateway@^0.11.7":
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/@apollo/gateway/-/gateway-0.11.7.tgz#d04b94ef15828209ccd01aa1706e88e56d54ea99"
+  integrity sha512-oeKSdU0aHe4eA0SPDpzEt2264EXz1/oBT4Nsfho0jkUQPsk6lCvzHGQ+FH8aVoHADcSTWs8u/Tq/PU8X6h41xg==
+  dependencies:
+    "@apollo/federation" "^0.11.3"
+    "@types/node-fetch" "2.5.4"
+    apollo-engine-reporting-protobuf "^0.4.4"
+    apollo-env "^0.6.1"
+    apollo-graphql "^0.3.7"
+    apollo-server-caching "^0.5.1"
+    apollo-server-core "^2.9.16"
+    apollo-server-env "^2.4.3"
+    apollo-server-types "^0.2.10"
+    graphql-extensions "^0.10.10"
+    loglevel "^1.6.1"
+    loglevel-debug "^0.0.1"
+    pretty-format "^24.7.0"
+
 "@apollo/protobufjs@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@apollo/protobufjs/-/protobufjs-1.0.3.tgz#02c655aedd4ba7c7f64cbc3d2b1dd9a000a391ba"
@@ -7151,6 +7170,18 @@ log-update@^2.3.0:
     cli-cursor "^2.0.0"
     wrap-ansi "^3.0.1"
 
+loglevel-debug@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/loglevel-debug/-/loglevel-debug-0.0.1.tgz#89f89d3dba13cba8a2cb4615d5d3ad7189f48a29"
+  integrity sha1-ifidPboTy6iiy0YV1dOtcYn0iik=
+  dependencies:
+    loglevel "^1.4.0"
+
+loglevel@^1.4.0, loglevel@^1.6.1:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.6.tgz#0ee6300cc058db6b3551fa1c4bf73b83bb771312"
+  integrity sha512-Sgr5lbboAUBo3eXCSPL4/KoVz3ROKquOjcctxmHIt+vol2DrqTQe3SwkKKuYhEiWB5kYa13YyopJ69deJ1irzQ==
+
 long@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
@@ -8439,7 +8470,7 @@ prettier@^1.16.4:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
 
-pretty-format@^24.9.0:
+pretty-format@^24.7.0, pretty-format@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-24.9.0.tgz#12fac31b37019a4eea3c11aa9a959eb7628aa7c9"
   integrity sha512-00ZMZUiHaJrNfk33guavqgvfJS30sLYf0f8+Srklv0AMPodGGHcoHgksZ3OThYnIvOd+8yMCn0YiEOogjlgsnA==
