@@ -2,30 +2,39 @@ import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
 import { delegateToSchema } from 'graphql-tools'
 import createRemoteSchema from './remote-schema'
+import filterSubscription from './transform-schema'
 
 interface Entity {
   id: string
 }
 
 async function main() {
-  const schemaWithoutFederation = await createRemoteSchema()
-  const federationSchema = transformSchemaFederation(schemaWithoutFederation, {
-    Query: {
+  const remoteSchema = await createRemoteSchema()
+  const filteredSchema = filterSubscription(remoteSchema)
+  const federationSchema = transformSchemaFederation(filteredSchema, {
+    query_root: {
       // Ensure the root queries of this schema show up the combined schema
       extend: true,
     },
-    user: {
-      // extend Product {
+    mutation_root: {
       extend: true,
-      // Product @key(fields: "id") {
+    },
+    // subscription_root: {
+    //   extend: true,
+    // },
+    user: {
+      // extend user {
+      extend: false,
+      // user @key(fields: "id") {
       keyFields: ['id'],
       fields: {
         // id: Int! @external
         id: {
-          external: true,
+          external: false,
         },
       },
-      resolveReference(reference, context: { [key: string]: any }, info) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolveReference(reference, _context: { [key: string]: any }, info) {
         return delegateToSchema({
           schema: info.schema,
           operation: 'query',
@@ -33,7 +42,7 @@ async function main() {
           args: {
             id: (reference as Entity).id,
           },
-          context,
+          context: {},
           info,
         })
       },
