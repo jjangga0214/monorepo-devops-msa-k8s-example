@@ -1,0 +1,6 @@
+- args:
+    cascade: true
+    sql: |-
+      insert into user_role values
+      ('ADMIN'), ('USER')
+  type: run_sql

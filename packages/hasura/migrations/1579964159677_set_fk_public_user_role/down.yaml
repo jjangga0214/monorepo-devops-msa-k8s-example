@@ -1,0 +1,4 @@
+- args:
+    sql: "\n          alter table \"public\".\"user\" drop constraint \"user_role_fkey\"\n
+      \     "
+  type: run_sql

@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."user" ALTER COLUMN "role" DROP NOT NULL;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."user"."role" IS E'null'
+  type: run_sql
