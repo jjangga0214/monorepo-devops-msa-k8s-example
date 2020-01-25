@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "yarn dev",
-    "_": "dotenv -e ../../.env -e .env --",
+    "_": "dotenv -e ../../.env --",
     "dev": "yarn _ docker-compose up -d",
     "dev:debug": "yarn _ docker-compose up",
     "down": "yarn _ docker-compose down",
