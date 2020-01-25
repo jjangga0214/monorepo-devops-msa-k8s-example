@@ -1,4 +1,9 @@
-import { ApolloServer, UserInputError, gql } from 'apollo-server'
+import {
+  ApolloServer,
+  UserInputError,
+  AuthenticationError,
+  gql,
+} from 'apollo-server'
 import { print } from 'graphql'
 import { buildFederatedSchema } from '@apollo/federation'
 import { importSchema } from 'graphql-import'
@@ -11,12 +16,16 @@ const hasuraTransformerClient = new GraphQLClient(
 )
 
 const resolvers = {
-  Query: {
-    me: (_parent, _args, { user: { id } }) => {
-      return { __typename: 'user', id }
+  query_root: {
+    me: (_parent, _args, { user }) => {
+      try {
+        return { __typename: 'user', id: user.id }
+      } catch (err) {
+        throw new AuthenticationError('Unauthenicated')
+      }
     },
   },
-  Mutation: {
+  mutation_root: {
     login: async (_parent, args) => {
       const res = await hasuraTransformerClient.request(print(GET_USER), args)
       if (res.user && res.user.length === 1) {
