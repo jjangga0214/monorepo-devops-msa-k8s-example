@@ -1,11 +1,11 @@
 import { gql } from 'apollo-server'
 
-export const GET_USER = gql`
-  query GetUser($username: String!, $password: String!) {
-    user(
-      where: { username: { _eq: $username }, password: { _eq: $password } }
-    ) {
+export const FIND_USER_BY_USERNAME = gql`
+  query FindUser($username: String!) {
+    user(where: { username: { _eq: $username } }) {
       id
+      password
+      role
     }
   }
 `

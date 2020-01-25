@@ -4,22 +4,23 @@ import {
   AuthenticationError,
   gql,
 } from 'apollo-server'
-import { print } from 'graphql'
+
 import { buildFederatedSchema } from '@apollo/federation'
 import { importSchema } from 'graphql-import'
-import { GraphQLClient } from 'graphql-request'
 import path from 'path'
-import { GET_USER } from './graphql/queries'
-
-const hasuraTransformerClient = new GraphQLClient(
-  process.env.HASURA_TRANSFORMER_ENDPOINT as string,
-)
+import { compare } from 'bcryptjs'
+import { sign } from 'jsonwebtoken'
+import { FIND_USER_BY_USERNAME } from './graphql/queries'
+import { requestToHasura } from './gateway-request'
 
 const resolvers = {
   query_root: {
     me: (_parent, _args, { user }) => {
       try {
-        return { __typename: 'user', id: user.id }
+        if (user.id) {
+          return { __typename: 'user', id: user.id }
+        }
+        throw new Error()
       } catch (err) {
         throw new AuthenticationError('Unauthenicated')
       }
@@ -27,15 +28,21 @@ const resolvers = {
   },
   mutation_root: {
     login: async (_parent, args) => {
-      const res = await hasuraTransformerClient.request(print(GET_USER), args)
+      const res = await requestToHasura(FIND_USER_BY_USERNAME, args)
       if (res.user && res.user.length === 1) {
-        return {
-          token: '',
-          user: { __typename: 'user', id: res.user[0].id },
+        const { id, password, role } = res.user
+        if (await compare(args.password, password)) {
+          return {
+            token: sign({ user: { id, role } }, process.env.AUTH_SECRET),
+            user: { __typename: 'user', id: res.user[0].id },
+          }
         }
+        throw new UserInputError('Invalid password', {
+          invalidArgs: ['password'],
+        })
       }
-      throw new UserInputError('Invalid username or password.', {
-        invalidArgs: ['username', 'password'],
+      throw new UserInputError('Invalid username', {
+        invalidArgs: ['username'],
       })
     },
   },
@@ -62,10 +69,13 @@ async function main() {
       },
     ]),
     context: ({ req }) => {
-      // gateway sends X-User-Id
-      const userId = req.headers['X-User-Id']
-      // add the user to the context
-      return { user: userId ? { id: userId } : null }
+      return {
+        user: {
+          // gateway sends user id and role as a header
+          id: req.headers['X-User-Id'],
+          role: req.headers['X-User-Role'],
+        },
+      }
     },
   })
   server

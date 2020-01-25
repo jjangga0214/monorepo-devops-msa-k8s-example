@@ -27,9 +27,11 @@
   "dependencies": {
     "@apollo/federation": "^0.11.3",
     "apollo-server": "^2.9.16",
+    "bcryptjs": "^2.4.3",
     "graphql": "^14.5.8",
     "graphql-import": "^1.0.0-beta.1",
-    "graphql-request": "^1.8.2"
+    "graphql-request": "^1.8.2",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {}
 }
