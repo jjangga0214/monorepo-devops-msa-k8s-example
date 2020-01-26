@@ -5,8 +5,10 @@ import { verify } from 'jsonwebtoken'
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line class-methods-use-this
   willSendRequest({ request, context }) {
-    request.http.headers.set('X-User-Id', context.user.id)
-    request.http.headers.set('X-User-Role', context.user.role)
+    if (context.user) {
+      request.http.headers.set('X-User-Id', context.user.id)
+      request.http.headers.set('X-User-Role', context.user.role)
+    }
   }
 }
 
@@ -32,21 +34,22 @@ async function main() {
     context: ({ req }) => {
       const isFromService =
         req.headers['X-Service-Secret'] === process.env.SERVICE_SECRET
-
+      let user = {}
       if (isFromService) {
-        return {
-          req,
-          isFromService,
-          user: {
-            id: req.headers['X-User-Id'],
-            role: req.headers['X-User-Role'],
-          },
+        user = {
+          id: req.headers['X-User-Id'],
+          role: req.headers['X-User-Role'],
+        }
+      } else {
+        const token = req.headers.authorization
+          ? req.headers.authorization.replace('Bearer ', '').trim()
+          : null
+        if (token) {
+          const VerifiedToken = verify(token, process.env.AUTH_SECRET)
+          user = VerifiedToken.user
         }
       }
-      const token = req.headers.authorization
-        ? req.headers.authorization.replace('Bearer ', '').trim()
-        : null
-      const { user } = verify(token, process.env.AUTH_SECRET)
+
       return {
         req,
         isFromService,
