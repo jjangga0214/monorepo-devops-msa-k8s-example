@@ -27,7 +27,6 @@ const resolvers = {
       const res = await requestToHasura(FIND_USER_BY_USERNAME, {
         username: args.username,
       })
-      console.log(res)
       if (res.user && res.user.length === 1) {
         const { id, password, role } = res.user[0]
         if (await compare(args.password, password)) {
