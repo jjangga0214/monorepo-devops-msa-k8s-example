@@ -60,15 +60,14 @@ async function main() {
         resolvers,
       },
     ]),
-    context: ({ req }) => {
-      return {
-        user: {
-          // gateway sends user id and role as a header
-          id: req.headers['x-user-id'],
-          role: req.headers['x-user-role'],
-        },
-      }
-    },
+    context: ({ req }) => ({
+      req,
+      user: {
+        // gateway sends user id and role as a header
+        id: req.headers['x-user-id'],
+        role: req.headers['x-user-role'],
+      },
+    }),
   })
   server
     .listen({
