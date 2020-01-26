@@ -10,20 +10,16 @@ import { importSchema } from 'graphql-import'
 import path from 'path'
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
+import { requestToHasura } from '@jjangga0214/request'
 import { FIND_USER_BY_USERNAME } from './graphql/queries'
-import { requestToHasura } from './gateway-request'
 
 const resolvers = {
   query_root: {
     me: (_parent, _args, { user }) => {
-      try {
-        if (user.id) {
-          return { __typename: 'user', id: user.id }
-        }
-        throw new Error()
-      } catch (err) {
-        throw new AuthenticationError('Unauthenicated')
+      if (user.id) {
+        return { __typename: 'user', id: user.id }
       }
+      throw new AuthenticationError('Unauthenicated')
     },
   },
   mutation_root: {
