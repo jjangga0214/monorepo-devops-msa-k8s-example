@@ -24,13 +24,16 @@ const resolvers = {
   },
   mutation_root: {
     login: async (_parent, args) => {
-      const res = await requestToHasura(FIND_USER_BY_USERNAME, args)
+      const res = await requestToHasura(FIND_USER_BY_USERNAME, {
+        username: args.username,
+      })
+      console.log(res)
       if (res.user && res.user.length === 1) {
-        const { id, password, role } = res.user
+        const { id, password, role } = res.user[0]
         if (await compare(args.password, password)) {
           return {
             token: sign({ user: { id, role } }, process.env.AUTH_SECRET),
-            user: { __typename: 'user', id: res.user[0].id },
+            user: { __typename: 'user', id },
           }
         }
         throw new UserInputError('Invalid password', {
