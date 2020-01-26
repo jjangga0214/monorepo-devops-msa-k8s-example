@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
 import { delegateToSchema } from 'graphql-tools'
 import createRemoteSchema from './remote-schema'
-import filterSubscription from './transform-schema'
+import transform from './transform-schema'
 
 interface Entity {
   id: string
@@ -10,8 +10,12 @@ interface Entity {
 
 async function main() {
   const remoteSchema = await createRemoteSchema()
-  const filteredSchema = filterSubscription(remoteSchema)
+  const filteredSchema = transform(remoteSchema)
   const federationSchema = transformSchemaFederation(filteredSchema, {
+    /**
+     * Hasura's query type is "query_root", not "Query".
+     * Mutation and subscription types follow the same naming rule.
+     */
     query_root: {
       // Ensure the root queries of this schema show up the combined schema
       extend: true,
@@ -28,13 +32,13 @@ async function main() {
       // user @key(fields: "id") {
       keyFields: ['id'],
       fields: {
-        // id: Int! @external
+        // id: uuid! @external
         id: {
           external: false,
         },
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolveReference(reference, _context: { [key: string]: any }, info) {
+      resolveReference(reference, context: { [key: string]: any }, info) {
         return delegateToSchema({
           schema: info.schema,
           operation: 'query',
@@ -42,7 +46,7 @@ async function main() {
           args: {
             id: (reference as Entity).id,
           },
-          context: {},
+          context,
           info,
         })
       },
@@ -51,6 +55,16 @@ async function main() {
 
   new ApolloServer({
     schema: federationSchema,
+    context: ({ req }) => {
+      return {
+        req,
+        user: {
+          // gateway sends user id and role as a header
+          id: req.headers['x-user-id'],
+          role: req.headers['x-user-role'],
+        },
+      }
+    },
   })
     .listen({
       port:

@@ -9,11 +9,21 @@ const httpLink = new HttpLink({
   fetch,
 })
 
-const link = setContext(() => ({
-  headers: {
+const link = setContext((_graphqlRequest, { graphqlContext }) => {
+  const headers = {
     'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-  },
-})).concat(httpLink)
+  }
+  /**
+   * If graphqlContext is truthy, user is guaranteed to exist in it, by context making.
+   */
+  if (graphqlContext && graphqlContext.user.id) {
+    headers['x-hasura-user-id'] = graphqlContext.user.id
+    headers['x-hasura-role'] = graphqlContext.user.role
+  }
+  return {
+    headers,
+  }
+}).concat(httpLink)
 
 export default async () => {
   const schema = await introspectSchema(link)
