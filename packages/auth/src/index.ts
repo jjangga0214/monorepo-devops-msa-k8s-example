@@ -31,7 +31,6 @@ const resolvers = {
         if (await compare(args.password, password)) {
           return {
             token: sign({ user: { id, role } }, process.env.AUTH_SECRET),
-            user: { __typename: 'user', id },
           }
         }
         throw new UserInputError('Invalid password', {

@@ -1,6 +1,5 @@
 type auth_payload {
   token: String!
-  user: user!
 }
 
 scalar uuid
