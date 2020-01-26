@@ -4,7 +4,6 @@ import {
   AuthenticationError,
   gql,
 } from 'apollo-server'
-
 import { buildFederatedSchema } from '@apollo/federation'
 import { importSchema } from 'graphql-import'
 import path from 'path'
@@ -44,11 +43,6 @@ const resolvers = {
       })
     },
   },
-  auth_payload: {
-    user: parent => {
-      return { __typename: 'user', id: parent.user.id }
-    },
-  },
 }
 
 async function main() {
@@ -70,8 +64,8 @@ async function main() {
       return {
         user: {
           // gateway sends user id and role as a header
-          id: req.headers['X-User-Id'],
-          role: req.headers['X-User-Role'],
+          id: req.headers['x-user-id'],
+          role: req.headers['x-user-role'],
         },
       }
     },
