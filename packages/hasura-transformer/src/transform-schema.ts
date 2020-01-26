@@ -1,7 +1,5 @@
-import { transformSchema, Result, FilterRootFields } from 'graphql-tools'
+import { transformSchema, FilterRootFields } from 'graphql-tools'
 import { GraphQLSchema } from 'graphql'
-
-import { AuthenticationError } from 'apollo-server'
 
 /**
  * Remove subscription from the schema.
@@ -27,6 +25,9 @@ function filterSubscription() {
  * As of writing dynamic selective exposure of schema is not official graphql spec.
  * But a few frameworks support the feature.
  */
+// import { AuthenticationError } from 'apollo-server'
+// import { Result } from 'graphql-tools'
+//
 // function transformUnauthorizedRequest() {
 //   return {
 //     transformResult(result: Result): Result {

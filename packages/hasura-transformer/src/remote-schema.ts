@@ -17,9 +17,15 @@ const link = setContext((_graphqlRequest, { graphqlContext }) => {
    * If graphqlContext is truthy, user is guaranteed to exist in it, by context making.
    */
   if (graphqlContext && graphqlContext.user.id) {
-    headers['x-hasura-user-id'] = graphqlContext.user.id
-    // By convention, Hasura's role is lowercase, while our system uses uppercase.
-    headers['x-hasura-role'] = graphqlContext.user.role.toLowerCase()
+    const { id, role } = graphqlContext.user
+    console.log(typeof graphqlContext.user.id)
+    if (id) {
+      headers['x-hasura-user-id'] = id
+    }
+    if (role) {
+      // By convention, Hasura's role is lowercase, while our system uses uppercase.
+      headers['x-hasura-role'] = role.toLowerCase()
+    }
   }
   return {
     headers,
