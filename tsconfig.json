@@ -9,6 +9,10 @@
       "@jjangga0214/*": ["*/src"],
       "~hello/*": ["hello/src/*"],
       "~api/*": ["api/src/*"],
+      "~request/*": ["request/src/*"],
+      "~hasura-transformer/*": ["hasura-transformer/src/*"],
+      "~auth/*": ["auth/src/*"],
+      "~gateway/*": ["gateway/src/*"],
       "~*": ["*/src"]
     },
     "strict": true,
