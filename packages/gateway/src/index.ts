@@ -11,9 +11,19 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
      * However, when an actual user sends a request to gateway,
      * context would be initialized.
      */
-    if (context.user) {
-      request.http.headers.set('x-user-id', context.user.id)
-      request.http.headers.set('x-user-role', context.user.role)
+    if (context && context.user) {
+      const { id, role } = context.user
+      /**
+       * If header is set to undefined, it will converted to string "undefined".
+       * So services will receive headers whose value is "undefined" as string.
+       * To prevent it, truthiness check is needed.
+       */
+      if (id) {
+        request.http.headers.set('x-user-id', id)
+      }
+      if (role) {
+        request.http.headers.set('x-user-role', role)
+      }
     }
   }
 }
@@ -38,7 +48,8 @@ async function main() {
     context: ({ req }) => {
       const isFromService =
         req.headers['x-service-secret'] === process.env.SERVICE_SECRET
-      let user = {}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let user: { [key: string]: any } = {}
       if (isFromService) {
         user = {
           id: req.headers['x-user-id'],
