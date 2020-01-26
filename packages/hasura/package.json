@@ -5,14 +5,24 @@
   "scripts": {
     "start": "yarn dev",
     "_": "dotenv -e ../../.env --",
-    "dev": "yarn _ docker-compose up -d",
-    "dev:debug": "yarn _ docker-compose up",
+    "dev": "yarn _ docker-compose up",
     "down": "yarn _ docker-compose down",
     "clear": "yarn _ docker-compose down --volumes",
     "hasura": "yarn _ hasura --project .",
     "console": "yarn hasura console",
     "migrate": "yarn hasura migrate",
     "apply": "yarn hasura migrate apply",
-    "rollback": "yarn hasura migrate apply --down"
+    "rollback": "yarn hasura migrate apply --down",
+    "ts": "yarn _ ts-node -r tsconfig-paths/register",
+    "seed": "yarn ts workflow/seed/index.ts",
+    "prune:_": "yarn ts workflow/postgres/prune.ts",
+    "truncate": "yarn prune:_ truncate",
+    "drop": "yarn hasura metadata clear && yarn prune:_ drop"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bcryptjs": "^2.4.3",
+    "graphql-tag": "^2.10.1",
+    "pg": "^7.17.1"
   }
 }
