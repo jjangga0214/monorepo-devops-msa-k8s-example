@@ -18,7 +18,8 @@ const link = setContext((_graphqlRequest, { graphqlContext }) => {
    */
   if (graphqlContext && graphqlContext.user.id) {
     headers['x-hasura-user-id'] = graphqlContext.user.id
-    headers['x-hasura-role'] = graphqlContext.user.role
+    // By convention, Hasura's role is lowercase, while our system uses uppercase.
+    headers['x-hasura-role'] = graphqlContext.user.role.toLowerCase()
   }
   return {
     headers,
