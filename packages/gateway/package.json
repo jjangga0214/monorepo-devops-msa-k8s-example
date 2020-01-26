@@ -9,7 +9,7 @@
     "dist"
   ],
   "_moduleAliases": {
-    "~auth": "dist"
+    "~gateway": "dist"
   },
   "scripts": {
     "postinstall": "shx mkdir -p dist",
