@@ -5,15 +5,19 @@ import { verify } from 'jsonwebtoken'
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line class-methods-use-this
   willSendRequest({ request, context }) {
+    /**
+     * When gateway is first initialized, it connects to services.
+     * At this moment, context would be undefined.
+     * However, when an actual user sends a request to gateway,
+     * context would be initialized.
+     */
     if (context.user) {
-      request.http.headers.set('X-User-Id', context.user.id)
-      request.http.headers.set('X-User-Role', context.user.role)
+      request.http.headers.set('x-user-id', context.user.id)
+      request.http.headers.set('x-user-role', context.user.role)
     }
   }
 }
 
-// Initialize an ApolloGateway instance and pass it an array of implementing
-// service names and URLs
 const gateway = new ApolloGateway({
   serviceList: [
     { name: 'hasuraTransformer', url: process.env.HASURA_TRANSFORMER_ENDPOINT },
@@ -33,12 +37,12 @@ async function main() {
     executor,
     context: ({ req }) => {
       const isFromService =
-        req.headers['X-Service-Secret'] === process.env.SERVICE_SECRET
+        req.headers['x-service-secret'] === process.env.SERVICE_SECRET
       let user = {}
       if (isFromService) {
         user = {
-          id: req.headers['X-User-Id'],
-          role: req.headers['X-User-Role'],
+          id: req.headers['x-user-id'],
+          role: req.headers['x-user-role'],
         }
       } else {
         const token = req.headers.authorization
@@ -68,19 +72,3 @@ async function main() {
     })
 }
 main()
-
-// // Pass the ApolloGateway to the ApolloServer constructor
-// const server = new ApolloServer({
-//   gateway,
-
-//   // Disable subscriptions (not currently supported with ApolloGateway)
-//   subscriptions: false,
-//   context: ({ req }) => {
-//     // const authorization = req.headers.authorization
-//     return {
-//       user: {
-//         id: '',
-//       },
-//     }
-//   },
-// })

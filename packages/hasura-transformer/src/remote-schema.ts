@@ -11,7 +11,7 @@ const httpLink = new HttpLink({
 
 const link = setContext(() => ({
   headers: {
-    'X-Hasura-Admin-Secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+    'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
   },
 })).concat(httpLink)
 

@@ -8,9 +8,9 @@ export const requestToGateway = async (
 ) => {
   const client = new GraphQLClient(process.env.GATEWAY_ENDPOINT as string, {
     headers: {
-      'X-Service-Secret': process.env.SERVICE_SECRET as string,
-      'X-User-Id': context.user.id,
-      'X-User-Role': context.user.role,
+      'x-service-secret': process.env.SERVICE_SECRET as string,
+      'x-user-id': context.user.id,
+      'x-user-role': context.user.role,
     },
   })
   return client.request(print(query), variables)
@@ -24,7 +24,7 @@ export const requestToHasura = async (query: DocumentNode, variables) => {
     process.env.HASURA_ENDPOINT_GRAPHQL as string,
     {
       headers: {
-        'X-Hasura-Admin-Secret': process.env
+        'x-hasura-admin-secret': process.env
           .HASURA_GRAPHQL_ADMIN_SECRET as string,
       },
     },
