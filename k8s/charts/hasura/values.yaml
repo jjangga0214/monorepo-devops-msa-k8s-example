@@ -9,3 +9,5 @@ console:
   enabled: true
 log:
   types: "startup,http-log,webhook-log,websocket-log,query-log"
+database:
+  protocol: "postgres"

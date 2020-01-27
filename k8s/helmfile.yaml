@@ -23,15 +23,15 @@ releases:
     values:
       # Hasura requires superuser to create extension.
       # This is "postgres" by default.
-      # So do not provide another username
-      # - postgresqlUsername: {{ requiredEnv "POSTGRES_USERNAME" }}
-      - postgresqlPassword: {{ requiredEnv "POSTGRES_PASSWORD" }}
-      - postgresqlDatabase: {{ requiredEnv "POSTGRES_DATABASE" }}
+      # So do not provide another username (do not uncomment the line below)
+      # - postgresqlUsername: {{ requiredEnv "HASURA_POSTGRES_USERNAME" }}
+      - postgresqlPassword: {{ requiredEnv "HASURA_POSTGRES_PASSWORD" }}
+      - postgresqlDatabase: {{ requiredEnv "HASURA_POSTGRES_DATABASE" }}
       - service:
-          port: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
+          port: {{ requiredEnv "HASURA_POSTGRES_ENDPOINT_PORT" }}
       - extraEnv: |
           - name: PGTZ
-            value: {{ requiredEnv "POSTGRES_TIMEZONE" }}
+            value: {{ requiredEnv "HASURA_POSTGRES_TIMEZONE" }}
   - name: hasura
     chart: ./charts/hasura
     namespace: {{ requiredEnv "NAMESPACE" }}
@@ -39,9 +39,9 @@ releases:
       - ./values/local/hasura.yaml
       - adminSecret: {{ requiredEnv "HASURA_GRAPHQL_ADMIN_SECRET" }}
       - database:
-          username: {{ requiredEnv "POSTGRES_USERNAME" }}
-          password: {{ requiredEnv "POSTGRES_PASSWORD" }}
+          username: {{ requiredEnv "HASURA_POSTGRES_USERNAME" }}
+          password: {{ requiredEnv "HASURA_POSTGRES_PASSWORD" }}
           endpoint:
-            ip: {{ requiredEnv "POSTGRES_ENDPOINT_IP" }}
-            port: {{ requiredEnv "POSTGRES_ENDPOINT_PORT" }}
-          database: {{ requiredEnv "POSTGRES_DATABASE" }}
+            ip: {{ requiredEnv "HASURA_POSTGRES_ENDPOINT_IP" }}
+            port: {{ requiredEnv "HASURA_POSTGRES_ENDPOINT_PORT" }}
+          database: {{ requiredEnv "HASURA_POSTGRES_DATABASE" }}
