@@ -14,19 +14,28 @@ const link = setContext((_graphqlRequest, { graphqlContext }) => {
     'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
   }
   /**
-   * If graphqlContext is truthy, user is guaranteed to exist in it, by context making.
+   * If graphqlContext is truthy, it means there' external request.
+   * If not, it happens when remote schema is fetched first time,
+   * without external request.
    */
-  if (graphqlContext && graphqlContext.user.id) {
-    const { id, role } = graphqlContext.user
-    console.log(typeof graphqlContext.user.id)
-    if (id) {
-      headers['x-hasura-user-id'] = id
-    }
-    if (role) {
-      // By convention, Hasura's role is lowercase, while our system uses uppercase.
-      headers['x-hasura-role'] = role.toLowerCase()
+  if (graphqlContext) {
+    if (graphqlContext.user.id) {
+      /**
+       * If graphqlContext is truthy, user is guaranteed to exist in it, by context making.
+       */
+      const { id, role } = graphqlContext.user
+      if (id) {
+        headers['x-hasura-user-id'] = id
+      }
+      if (role) {
+        // By convention, Hasura's role is lowercase, while our system uses uppercase.
+        headers['x-hasura-role'] = role.toLowerCase()
+      }
+    } else {
+      headers['x-hasura-role'] = 'anonymous'
     }
   }
+
   return {
     headers,
   }
