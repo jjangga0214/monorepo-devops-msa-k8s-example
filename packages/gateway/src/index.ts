@@ -5,13 +5,16 @@ import { verify } from 'jsonwebtoken'
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line class-methods-use-this
   willSendRequest({ request, context }) {
+    console.log()
     /**
      * When gateway is first initialized, it connects to services.
-     * At this moment, context would be undefined.
+     * At this moment, context would be {}.
      * However, when an actual user sends a request to gateway,
      * context would be initialized.
      */
-    if (context && context.user) {
+    if (Object.keys(context).length === 0) {
+      request.http.headers.set('x-gateway-message', 'INIT')
+    } else if (context && context.user) {
       const { id, role } = context.user
       /**
        * If header is set to undefined, it will converted to string "undefined".
