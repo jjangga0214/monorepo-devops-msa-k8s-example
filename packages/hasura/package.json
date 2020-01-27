@@ -19,8 +19,10 @@
     "truncate": "yarn prune:_ truncate",
     "drop": "yarn hasura metadata clear && yarn prune:_ drop"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
+    "@jjangga0214/request": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "graphql-tag": "^2.10.1",
     "pg": "^7.17.1"
