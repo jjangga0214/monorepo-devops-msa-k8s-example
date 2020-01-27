@@ -1,0 +1,24 @@
+- args:
+    delete:
+      columns: '*'
+    enable_manual: false
+    headers: []
+    insert:
+      columns: '*'
+    name: history-trigger
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    table:
+      name: todo
+      schema: public
+    update:
+      columns:
+      - status
+      - title
+      - created_at
+      - id
+      - updated_at
+    webhook_from_env: HISTORY_TRIGGER_ENDPOINT
+  type: create_event_trigger
