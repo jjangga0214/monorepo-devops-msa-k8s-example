@@ -1,4 +1,6 @@
-import { connect, TodoHistory } from './db'
+import { connect, TodoHistory } from '@jjangga0214/history-db'
+
+connect()
 
 async function main() {
   connect()

@@ -21,15 +21,10 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "dev": "yarn _ ts-node-dev -r tsconfig-paths/register src/index.ts",
-    "db": "yarn _ docker-compose up",
-    "db:down": "yarn _ docker-compose down",
-    "db:clear": "yarn _ docker-compose down --volumes"
+    "dev": "yarn _ ts-node-dev -r tsconfig-paths/register src/index.ts"
   },
-  "dependencies": {
-    "mongoose": "^5.8.9"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/mongoose": "^5.5.43"
+    "@jjangga0214/history-db": "^1.0.0"
   }
 }
