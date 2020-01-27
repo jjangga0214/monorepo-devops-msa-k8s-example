@@ -7,7 +7,7 @@ import { Document, Model, model, Schema, connect as _connect } from 'mongoose'
 export async function connect() {
   await _connect(
     // access to admin database (See the end of this line)
-    `${process.env.HISTORY_MONGO_ENDPOINT_PROTOCOL}://${process.env.HISTORY_MONGO_USERNAME}:${process.env.HISTORY_MONGO_PASSWORD}@${process.env.HISTORY_MONGO_ENDPOINT_IP}:${process.env.HISTORY_MONGO_ENDPOINT_PORT}/admin`,
+    `${process.env.HISTORY_MONGO_ENDPOINT_SCHEME}://${process.env.HISTORY_MONGO_USERNAME}:${process.env.HISTORY_MONGO_PASSWORD}@${process.env.HISTORY_MONGO_ENDPOINT_IP}:${process.env.HISTORY_MONGO_ENDPOINT_PORT}/admin`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
