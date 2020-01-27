@@ -31,7 +31,5 @@
     "mongoose": "^5.8.9",
     "shx": "^0.3.2"
   },
-  "devDependencies": {
-    "@types/mongoose": "^5.5.43"
-  }
+  "devDependencies": {}
 }
