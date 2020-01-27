@@ -1,5 +1,5 @@
 import { connect, TodoHistory } from '@jjangga0214/history-db'
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { AddressInfo } from 'net'
 
 connect()
