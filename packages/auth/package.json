@@ -12,7 +12,6 @@
     "~auth": "dist"
   },
   "scripts": {
-    "postinstall": "shx mkdir -p dist",
     "build": "tsc --build tsconfig.build.json && link-module-alias",
     "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf dist coverage *.log junit.xml && jest --clearCache",
     "test": "jest",
