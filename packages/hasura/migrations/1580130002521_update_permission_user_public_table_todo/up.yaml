@@ -1,0 +1,15 @@
+- args:
+    permission:
+      columns:
+      - status
+      - title
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: todo
+      schema: public
+  type: create_update_permission

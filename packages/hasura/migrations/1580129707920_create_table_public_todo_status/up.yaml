@@ -1,0 +1,8 @@
+- args:
+    sql: CREATE TABLE "public"."todo_status"("value" text NOT NULL, "comment" text,
+      PRIMARY KEY ("value") );
+  type: run_sql
+- args:
+    name: todo_status
+    schema: public
+  type: add_existing_table_or_view

@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"todo\"\n           add constraint
+      \"todo_status_fkey\"\n           foreign key (\"status\")\n           references
+      \"public\".\"todo_status\"\n           (\"value\") on update cascade on delete
+      restrict;\n      "
+  type: run_sql

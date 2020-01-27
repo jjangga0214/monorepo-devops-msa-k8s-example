@@ -1,0 +1,6 @@
+- args:
+    relationship: todos
+    table:
+      name: todo_status
+      schema: public
+  type: drop_relationship

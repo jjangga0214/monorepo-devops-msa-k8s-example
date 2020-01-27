@@ -1,0 +1,8 @@
+- args:
+    name: todo_status
+    table:
+      name: todo
+      schema: public
+    using:
+      foreign_key_constraint_on: status
+  type: create_object_relationship

@@ -1,0 +1,5 @@
+- args:
+    cascade: true
+    sql: insert into todo_status values ('REMAINING', 'Task is not done.'), ('COMPLETED',
+      'Task is completed')
+  type: run_sql
