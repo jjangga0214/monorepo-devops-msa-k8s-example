@@ -4,12 +4,12 @@ import { promises as fs } from 'fs'
 import path from 'path'
 
 const client = new Client({
-  user: process.env.POSTGRES_USERNAME,
-  password: process.env.POSTGRES_PASSWORD,
-  host: process.env.POSTGRES_ENDPOINT_IP,
-  port: process.env.POSTGRES_ENDPOINT_PORT,
-  database: process.env.POSTGRES_DATABASE,
-  ssl: process.env.POSTGRES_SSL === 'true',
+  user: process.env.HASURA_POSTGRES_USERNAME,
+  password: process.env.HASURA_POSTGRES_PASSWORD,
+  host: process.env.HASURA_POSTGRES_ENDPOINT_IP,
+  port: process.env.HASURA_POSTGRES_ENDPOINT_PORT,
+  database: process.env.HASURA_POSTGRES_DATABASE,
+  ssl: process.env.HASURA_POSTGRES_SSL === 'true',
 })
 
 async function main() {
