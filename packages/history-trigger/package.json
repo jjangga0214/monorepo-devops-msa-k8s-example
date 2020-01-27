@@ -1,0 +1,33 @@
+{
+  "name": "@jjangga0214/history-trigger",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "_moduleAliases": {
+    "~history-trigger": "dist"
+  },
+  "scripts": {
+    "_": "dotenv -e ../../.env --",
+    "build": "tsc --build tsconfig.build.json && link-module-alias",
+    "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf coverage *.log junit.xml dist && jest --clearCache",
+    "test": "jest",
+    "test:unit": "jest test/unit",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
+    "coverage": "jest --coverage",
+    "coverage:show": "live-server coverage/lcov-report",
+    "dev": "yarn _ ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "db": "yarn _ docker-compose up",
+    "db:down": "yarn _ docker-compose down",
+    "db:clear": "yarn _ docker-compose down --volumes"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}
