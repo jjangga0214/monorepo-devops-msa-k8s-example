@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mongo:
+    image: mongo:4
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: ${HISTORY_MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${HISTORY_MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${HISTORY_MONGO_PASSWORD}
+    ports:
+      - target: 27017
+        published: ${HISTORY_MONGO_ENDPOINT_PORT}
+        protocol: tcp
+        mode: host
+    volumes:
+      - mongo_data:/data/db/
+volumes:
+  mongo_data:

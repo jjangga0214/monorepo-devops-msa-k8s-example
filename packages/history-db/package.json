@@ -1,0 +1,37 @@
+{
+  "name": "@jjangga0214/history-db",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "_moduleAliases": {
+    "~history-db": "dist"
+  },
+  "scripts": {
+    "_": "dotenv -e ../../.env --",
+    "postinstall": "shx mkdir -p dist && link-module-alias",
+    "build": "tsc --build tsconfig.build.json && link-module-alias",
+    "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf coverage *.log junit.xml dist && jest --clearCache",
+    "test": "jest",
+    "test:unit": "jest test/unit",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
+    "coverage": "jest --coverage",
+    "coverage:show": "live-server coverage/lcov-report",
+    "dev": "yarn _ docker-compose up",
+    "down": "yarn _ docker-compose down",
+    "clear": "yarn _ docker-compose down --volumes"
+  },
+  "dependencies": {
+    "link-module-alias": "^1.2.0",
+    "mongoose": "^5.8.9",
+    "shx": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.5.43"
+  }
+}
