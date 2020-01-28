@@ -1,0 +1,6 @@
+config:
+  monorepo-devops-msa-k8s-example:nodeCount: "1"
+  monorepo-devops-msa-k8s-example:nodeMachineType: n1-standard-1
+  gcp:project: quickdemo-gke
+  gcp:region: europe-west3
+  gcp:zone: europe-west3-c
