@@ -67,6 +67,7 @@ async function main() {
         role: req.headers['x-user-role'],
       },
     }),
+    debug: process.env.NODE_ENV === 'development',
   })
   server
     .listen({

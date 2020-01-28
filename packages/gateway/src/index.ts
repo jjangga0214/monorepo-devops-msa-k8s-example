@@ -31,6 +31,8 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   }
 }
 
+const debug = process.env.NODE_ENV === 'development'
+
 const gateway = new ApolloGateway({
   serviceList: [
     { name: 'hasuraTransformer', url: process.env.HASURA_TRANSFORMER_ENDPOINT },
@@ -40,6 +42,7 @@ const gateway = new ApolloGateway({
   buildService({ url }) {
     return new AuthenticatedDataSource({ url })
   },
+  debug,
 })
 
 async function main() {
@@ -75,6 +78,7 @@ async function main() {
       }
     },
     subscriptions: false,
+    debug,
   })
 
   server

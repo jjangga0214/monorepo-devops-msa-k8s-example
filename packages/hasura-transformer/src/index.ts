@@ -65,6 +65,7 @@ async function main() {
         },
       }
     },
+    debug: process.env.NODE_ENV === 'development',
   })
     .listen({
       port:
