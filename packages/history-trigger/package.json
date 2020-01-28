@@ -21,10 +21,11 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "dev": "yarn _ ts-node-dev -r tsconfig-paths/register src/index.ts",
-    "db": "yarn _ docker-compose up",
-    "db:down": "yarn _ docker-compose down",
-    "db:clear": "yarn _ docker-compose down --volumes"
+    "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
+    "dev:debug": "yarn ts src/index.ts",
+    "dev": "pm2 start --restart-delay 250 --name history-trigger \"yarn dev_\"",
+    "down": "pm2 delete history-trigger",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "express": "^4.17.1"

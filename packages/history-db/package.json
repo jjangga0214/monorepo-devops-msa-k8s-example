@@ -22,7 +22,8 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "dev": "yarn _ docker-compose up",
+    "dev:debug": "yarn _ docker-compose up",
+    "dev": "yarn dev:debug -d",
     "down": "yarn _ docker-compose down",
     "clear": "yarn _ docker-compose down --volumes"
   },

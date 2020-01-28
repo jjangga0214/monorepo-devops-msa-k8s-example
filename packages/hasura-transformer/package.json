@@ -12,6 +12,7 @@
     "~hasura-transformer": "dist"
   },
   "scripts": {
+    "_": "dotenv -e ../../.env --",
     "build": "tsc --build tsconfig.build.json && link-module-alias",
     "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf dist coverage *.log junit.xml && jest --clearCache",
     "test": "jest",
@@ -20,7 +21,10 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "dev": "dotenv -e ../../.env -- ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
+    "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
+    "dev_": "yarn ts src/index.ts",
+    "dev": "pm2 start --restart-delay 250 --name hasura-transformer \"yarn dev_\"",
+    "down": "pm2 delete hasura-transformer",
     "start": "node dist/index.js"
   },
   "dependencies": {

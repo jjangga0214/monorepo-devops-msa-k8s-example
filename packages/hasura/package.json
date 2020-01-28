@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "yarn dev",
     "_": "dotenv -e ../../.env --",
-    "dev": "yarn _ docker-compose up",
+    "dev": "yarn dev:debug -d",
+    "dev:debug": "yarn _ docker-compose up",
     "down": "yarn _ docker-compose down",
     "clear": "yarn _ docker-compose down --volumes",
     "hasura": "yarn _ hasura --project .",
@@ -17,7 +17,8 @@
     "seed": "yarn ts workflow/seed/index.ts",
     "prune:_": "yarn ts workflow/postgres/prune.ts",
     "truncate": "yarn prune:_ truncate",
-    "drop": "yarn hasura metadata clear && yarn prune:_ drop"
+    "drop": "yarn hasura metadata clear && yarn prune:_ drop",
+    "start": "yarn dev"
   },
   "dependencies": {
   },
