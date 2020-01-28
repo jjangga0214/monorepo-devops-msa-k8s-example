@@ -1,5 +1,5 @@
 {
-  "name": "@jjangga0214/hello",
+  "name": "@jjangga0214/pulumi",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
@@ -9,20 +9,23 @@
     "dist"
   ],
   "_moduleAliases": {
-    "~hello": "dist"
+    "~pulumi": "dist"
   },
   "scripts": {
     "postinstall": "shx mkdir -p dist && link-module-alias",
     "build": "tsc --build tsconfig.build.json && link-module-alias",
     "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf coverage *.log junit.xml dist && jest --clearCache",
-    "test": "jest",
-    "test:unit": "jest test/unit",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
-    "coverage": "jest --coverage",
-    "coverage:show": "live-server coverage/lcov-report"
+    "pulumi": "GOOGLE_APPLICATION_CREDENTIALS=../../.gcp-credentials.json pulumi",
+    "up": "yarn pulumi up",
+    "select": "yarn pulumi stack select",
+    "staging": "yarn select staging",
+    "production": "yarn select production"
   },
   "dependencies": {
+    "@pulumi/gcp": "^2.2.0",
+    "@pulumi/kubernetes": "^1.4.5",
+    "@pulumi/pulumi": "^1.9.1",
+    "@pulumi/random": "^1.4.0",
     "link-module-alias": "^1.2.0",
     "shx": "^0.3.2"
   }

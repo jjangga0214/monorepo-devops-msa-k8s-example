@@ -1,5 +1,5 @@
 {
-  "name": "@jjangga0214/hello",
+  "name": "@jjangga0214/workflow",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
@@ -9,21 +9,22 @@
     "dist"
   ],
   "_moduleAliases": {
-    "~hello": "dist"
+    "~workflow": "dist"
   },
   "scripts": {
     "postinstall": "shx mkdir -p dist && link-module-alias",
     "build": "tsc --build tsconfig.build.json && link-module-alias",
     "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf coverage *.log junit.xml dist && jest --clearCache",
-    "test": "jest",
-    "test:unit": "jest test/unit",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
-    "coverage": "jest --coverage",
-    "coverage:show": "live-server coverage/lcov-report"
+    "_": "dotenv -e ../../.env --",
+    "ts": "yarn _ ts-node -r tsconfig-paths/register",
+    "seed": "yarn ts seed/hasura/index.ts",
+    "truncate": "yarn ts seed/hasura/index.ts"
   },
   "dependencies": {
+    "@jjangga0214/request": "^1.0.0",
+    "bcryptjs": "^2.4.3",
     "link-module-alias": "^1.2.0",
+    "pg": "^7.17.1",
     "shx": "^0.3.2"
   }
 }

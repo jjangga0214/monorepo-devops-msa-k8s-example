@@ -23,7 +23,7 @@
     "coverage:show": "live-server coverage/lcov-report",
     "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
     "dev:debug": "yarn ts src/index.ts",
-    "dev": "pm2 start --restart-delay 250 --name auth \"yarn dev_\"",
+    "dev": "pm2 start --restart-delay 250 --name auth \"yarn dev:debug\"",
     "down": "pm2 delete auth",
     "start": "node dist/index.js"
   },

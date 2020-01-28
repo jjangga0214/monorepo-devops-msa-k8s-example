@@ -23,7 +23,7 @@
     "coverage:show": "live-server coverage/lcov-report",
     "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
     "dev:debug": "yarn ts src/index.ts",
-    "dev": "pm2 start --restart-delay 250 --name history \"yarn dev_\"",
+    "dev": "pm2 start --restart-delay 250 --name history \"yarn dev:debug\"",
     "down": "pm2 delete history",
     "start": "node dist/index.js"
   },
@@ -31,9 +31,9 @@
     "@apollo/federation": "^0.11.3",
     "apollo-server": "^2.9.16",
     "graphql": "^14.6.0",
-    "graphql-import": "^0.7.1"
+    "graphql-import": "^0.7.1",
+    "@jjangga0214/history-db": "^1.0.0"
   },
   "devDependencies": {
-    "@jjangga0214/history-db": "^1.0.0"
   }
 }
