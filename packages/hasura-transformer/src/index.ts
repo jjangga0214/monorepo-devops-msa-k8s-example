@@ -1,12 +1,8 @@
 import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
-import { delegateToSchema } from 'graphql-tools'
 import createRemoteSchema from './remote-schema'
 import transform from './transform-schema'
-
-interface Entity {
-  id: string
-}
+import { extend } from './extend-schema'
 
 async function main() {
   const remoteSchema = await createRemoteSchema()
@@ -23,34 +19,11 @@ async function main() {
     mutation_root: {
       extend: true,
     },
+    // Does not use subscription as apollo gateway does not support it as of writing
     // subscription_root: {
     //   extend: true,
     // },
-    user: {
-      // extend user {
-      extend: false,
-      // user @key(fields: "id") {
-      keyFields: ['id'],
-      fields: {
-        // id: uuid! @external
-        id: {
-          external: false,
-        },
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolveReference(reference, context: { [key: string]: any }, info) {
-        return delegateToSchema({
-          schema: info.schema,
-          operation: 'query',
-          fieldName: 'user_by_pk',
-          args: {
-            id: (reference as Entity).id,
-          },
-          context,
-          info,
-        })
-      },
-    },
+    ...(await extend()),
   })
 
   new ApolloServer({

@@ -14,14 +14,14 @@ const link = setContext((_graphqlRequest, { graphqlContext }) => {
     'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
   }
   /**
-   * If graphqlContext is truthy, it means there' external request.
+   * If graphqlContext is truthy, it's instantiated by an external request.
    * If not, it happens when remote schema is fetched first time,
    * without external request.
    */
   if (graphqlContext) {
     if (graphqlContext.user.id) {
       /**
-       * If graphqlContext is truthy, user is guaranteed to exist in it, by context making.
+       * If graphqlContext is truthy, user is guaranteed to exist in it, by custom context instantiation.
        */
       const { id, role } = graphqlContext.user
       if (id) {
