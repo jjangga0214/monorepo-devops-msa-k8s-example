@@ -1,6 +1,7 @@
 name: monorepo-devops-msa-k8s-example
 description: A Google Kubernetes Engine (GKE) cluster
 runtime: nodejs
+main: src/
 template:
   config:
     gcp:project:
