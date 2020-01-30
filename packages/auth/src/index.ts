@@ -9,7 +9,7 @@ import { importSchema } from 'graphql-import'
 import path from 'path'
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
-import { requestToHasura } from '@jjangga0214/request'
+import { requestToHasura, createUserContext } from '@jjangga0214/communication'
 import { FIND_USER_BY_USERNAME } from './graphql/queries'
 
 const resolvers = {
@@ -61,11 +61,7 @@ async function main() {
     ]),
     context: ({ req }) => ({
       req,
-      user: {
-        // gateway sends user id and role as a header
-        id: req.headers['x-user-id'],
-        role: req.headers['x-user-role'],
-      },
+      user: createUserContext(req),
     }),
     debug: process.env.NODE_ENV === 'development',
   })
@@ -77,4 +73,5 @@ async function main() {
       console.log(`🚀 Server ready at ${url}`)
     })
 }
+
 main()
