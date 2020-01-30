@@ -1,5 +1,5 @@
 {
-  "name": "@jjangga0214/gateway",
+  "name": "@jjangga0214/graphql-gateway",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
@@ -12,7 +12,7 @@
     "~gateway": "dist"
   },
   "scripts": {
-    "_":"dotenv -e ../../.env --",
+    "_": "dotenv -e ../../.env --",
     "postinstall": "shx mkdir -p dist",
     "build": "tsc --build tsconfig.build.json && link-module-alias",
     "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf dist coverage *.log junit.xml && jest --clearCache",
@@ -30,9 +30,9 @@
   },
   "dependencies": {
     "@apollo/gateway": "^0.11.7",
+    "@jjangga0214/communication": "^1.0.0",
     "apollo-server": "^2.9.16",
-    "graphql": "^14.5.8",
-    "jsonwebtoken": "^8.5.1"
+    "graphql": "^14.5.8"
   },
   "devDependencies": {}
 }
