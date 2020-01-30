@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { ApolloServer } from 'apollo-server'
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway'
 import {
@@ -5,6 +6,7 @@ import {
   createUserContext,
   createUserHeaders,
 } from '@jjangga0214/communication'
+import { DevApolloGateway } from './dev'
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line class-methods-use-this
@@ -31,7 +33,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 
 const debug = process.env.NODE_ENV === 'development'
 
-const gateway = new ApolloGateway({
+const gateway = new (debug ? DevApolloGateway : ApolloGateway)({
   serviceList: [
     {
       name: 'hasura-transformer',
@@ -45,6 +47,8 @@ const gateway = new ApolloGateway({
   },
   debug,
 })
+
+gateway.load()
 
 async function main() {
   const { schema, executor } = await gateway.load()
