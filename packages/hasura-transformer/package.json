@@ -29,14 +29,13 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.11.3",
+    "@jjangga0214/communication": "^1.0.0",
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "apollo-server": "^2.9.16",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.6",
-    "graphql-transform-federation": "^2.0.1",
-    "node-fetch": "^2.6.0",
-    "@jjangga0214/communication": "^1.0.0"
+    "graphql-transform-federation": "^2.0.1"
   },
   "devDependencies": {}
 }
