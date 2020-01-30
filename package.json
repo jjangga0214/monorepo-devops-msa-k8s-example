@@ -10,7 +10,7 @@
   "scripts": {
     "pkg": "yarn workspace @jjangga0214/$PACKAGE",
     "r":"lerna run --parallel",
-    "dev": "yarn r dev --ignore '{@jjangga0214/api,@jjangga0214/hello,@jjangga0214/gateway,@jjangga0214/pulumi,@jjangga0214/workflow,@jjangga0214/request}'",
+    "dev": "yarn r dev --ignore '{@jjangga0214/api,@jjangga0214/hello,@jjangga0214/gateway,@jjangga0214/pulumi,@jjangga0214/workflow,@jjangga0214/communication}'",
     "down": "yarn r down",
     "log": "pm2 logs",
     "seed": "yarn r seed",
@@ -35,14 +35,15 @@
     "husky-skip": "cross-env HUSKY_SKIP_HOOKS=1",
     "commit": "git cz",
     "auth": "yarn workspace @jjangga0214/auth",
-    "gateway": "yarn workspace @jjangga0214/gateway",
+    "communication": "yarn workspace @jjangga0214/communication",
+    "graphql-gateway": "yarn workspace @jjangga0214/graphql-gateway",
     "hasura": "yarn workspace @jjangga0214/hasura",
     "hasura-transformer": "yarn workspace @jjangga0214/hasura-transformer",
     "history": "yarn workspace @jjangga0214/history",
     "history-db": "yarn workspace @jjangga0214/history-db",
     "history-trigger": "yarn workspace @jjangga0214/history-trigger",
     "pulumi": "yarn workspace @jjangga0214/pulumi",
-    "request": "yarn workspace @jjangga0214/request",
+    "stitching-gateway": "yarn workspace @jjangga0214/stitching-gateway",
     "workflow": "yarn workspace @jjangga0214/workflow"
   },
   "husky": {
