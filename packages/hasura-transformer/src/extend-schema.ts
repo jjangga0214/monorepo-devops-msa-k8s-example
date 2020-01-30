@@ -1,4 +1,4 @@
-import { requestToHasura } from '@jjangga0214/request'
+import { requestToHasura } from '@jjangga0214/communication'
 import { delegateToSchema } from 'graphql-tools'
 import { INTROSPECT_QUERY } from '~hasura-transformer/graphql/queries'
 

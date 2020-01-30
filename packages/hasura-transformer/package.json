@@ -36,7 +36,7 @@
     "graphql-tools": "^4.0.6",
     "graphql-transform-federation": "^2.0.1",
     "node-fetch": "^2.6.0",
-    "@jjangga0214/request": "^1.0.0"
+    "@jjangga0214/communication": "^1.0.0"
   },
   "devDependencies": {}
 }

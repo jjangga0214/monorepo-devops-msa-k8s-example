@@ -5,5 +5,6 @@
     "outDir": "./dist",
     "tsBuildInfoFile": "../../.build-cache/hasura-transformer.tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../communication/tsconfig.build.json", "prepend": false }]
 }
