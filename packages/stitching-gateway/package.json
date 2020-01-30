@@ -1,0 +1,40 @@
+{
+  "name": "@jjangga0214/stitching-gateway",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "_moduleAliases": {
+    "~stitching-gateway": "dist"
+  },
+  "scripts": {
+    "_": "dotenv -e ../../.env --",
+    "postinstall": "shx mkdir -p dist",
+    "build": "tsc --build tsconfig.build.json && link-module-alias",
+    "clean": "tsc --build tsconfig.build.json --clean && shx rm -rf dist coverage *.log junit.xml && jest --clearCache",
+    "test": "jest",
+    "test:unit": "jest test/unit",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --reporters='jest-junit'",
+    "coverage": "jest --coverage",
+    "coverage:show": "live-server coverage/lcov-report",
+    "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
+    "dev:debug": "yarn ts src/index.ts",
+    "dev": "pm2 start --restart-delay 250 --name stitching-gateway \"yarn dev:debug\"",
+    "down": "pm2 delete stitching-gateway",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.16",
+    "apollo-utilities": "^1.3.3",
+    "graphql": "^14.5.8",
+    "graphql-tools": "^4.0.6",
+    "jsonwebtoken": "^8.5.1",
+    "@jjangga0214/communication": "^1.0.0"
+  },
+  "devDependencies": {}
+}
