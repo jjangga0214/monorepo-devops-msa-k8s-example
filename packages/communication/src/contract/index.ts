@@ -8,7 +8,8 @@ export { Context, UserContext } from './context'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export declare type HeadersProvider = (
   context: Context,
-) => { [key: string]: any }
+) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
+{ [key: string]: any }
 
 export function createUserHeaders(context: Context) {
   const headers = {}

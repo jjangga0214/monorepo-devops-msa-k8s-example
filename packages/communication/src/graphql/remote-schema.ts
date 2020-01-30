@@ -1,5 +1,4 @@
 import { introspectSchema, makeRemoteExecutableSchema } from 'graphql-tools'
-import fetch from 'node-fetch'
 import { split, ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import { WebSocketLink } from 'apollo-link-ws'
@@ -7,6 +6,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { HttpLink } from 'apollo-link-http'
 import ws from 'ws'
+import fetch from 'cross-fetch'
 import { HeadersProvider } from '~communication/contract'
 
 export function createHttpLink(uri: string) {
@@ -32,13 +32,8 @@ export function createWsLink(uri: string) {
 
 export function createHeaderLink(provideHeader: HeadersProvider): ApolloLink {
   const contextLink = setContext((_graphqlRequest, { graphqlContext }) => {
-    if (graphqlContext) {
-      return {
-        headers: provideHeader(graphqlContext),
-      }
-    }
     return {
-      headers: {},
+      headers: provideHeader(graphqlContext),
     }
   })
   return contextLink
@@ -73,7 +68,6 @@ export async function createRemoteSchema(link: ApolloLink) {
     schema,
     link,
   })
-
   return executableSchema
 }
 
@@ -118,9 +112,6 @@ export const hasuraHeaderContextLink = createBasicLink(
         headers['x-hasura-role'] = 'anonymous'
       }
     }
-
-    return {
-      headers,
-    }
+    return headers
   },
 )
