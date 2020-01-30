@@ -1,4 +1,4 @@
-import { requestToHasura } from '@jjangga0214/request'
+import { requestToHasura } from '@jjangga0214/communication'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { hash } from 'bcryptjs'
 import { CREATE_USER } from './mutations'

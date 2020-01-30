@@ -23,7 +23,7 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@jjangga0214/request": "^1.0.0",
+    "@jjangga0214/communication": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "graphql-tag": "^2.10.1",
     "pg": "^7.17.1"
