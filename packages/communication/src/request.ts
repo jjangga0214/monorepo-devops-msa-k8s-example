@@ -7,12 +7,15 @@ export async function requestToGateway(
   variables,
   context,
 ) {
-  const client = new GraphQLClient(process.env.GATEWAY_ENDPOINT as string, {
-    headers: {
-      'x-service-secret': process.env.SERVICE_SECRET as string,
-      ...createUserHeaders(context),
+  const client = new GraphQLClient(
+    process.env.STITCHING_GATEWAY_ENDPOINT as string,
+    {
+      headers: {
+        'x-service-secret': process.env.SERVICE_SECRET as string,
+        ...createUserHeaders(context),
+      },
     },
-  })
+  )
   return client.request(print(query), variables)
 }
 

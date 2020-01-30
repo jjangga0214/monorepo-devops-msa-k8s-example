@@ -64,7 +64,8 @@ async function main() {
 
   server
     .listen({
-      port: process.env.PORT || process.env.GATEWAY_ENDPOINT_PORT || 8080,
+      port:
+        process.env.PORT || process.env.GRAPHQL_GATEWAY_ENDPOINT_PORT || 8080,
     })
     .then(({ url }) => {
       console.log(`🚀 Server ready at ${url}`)
