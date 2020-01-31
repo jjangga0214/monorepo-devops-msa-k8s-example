@@ -4,12 +4,13 @@ import {
   useOnlySubscription,
   createRemoteSchema,
   createBasicLink,
-  hasuraHeaderContextLink,
+  hasuraLink,
   createUserHeaders,
+  useExceptSubscription,
 } from '@jjangga0214/communication'
 
 async function hasura() {
-  const hasuraSchema = await createRemoteSchema(hasuraHeaderContextLink)
+  const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedHasuraSchema = transformSchema(hasuraSchema, [
     useOnlySubscription(),
   ])
@@ -26,13 +27,15 @@ async function graphqlGateway() {
       if (!context || Object.keys(context).length === 0) {
         headers['x-gateway-message'] = 'INIT'
       }
-      return {
-        headers,
-      }
+      return headers
     },
   )
   const graphqlGatewaySchema = await createRemoteSchema(graphqlGatewayLink)
-  return graphqlGatewaySchema
+  const transformedGraphqlGatewaySchema = transformSchema(
+    graphqlGatewaySchema,
+    [useExceptSubscription()],
+  )
+  return transformedGraphqlGatewaySchema
 }
 
 export default async function() {
