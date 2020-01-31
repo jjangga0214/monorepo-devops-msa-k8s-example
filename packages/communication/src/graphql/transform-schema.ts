@@ -9,7 +9,10 @@ import { /* transformSchema, */ FilterRootFields } from 'graphql-tools'
  * Note that support for subscription on gateway is on its roadmap.
  */
 export function useOnlySubscription() {
-  return new FilterRootFields(operation => operation === 'Subscription')
+  return new FilterRootFields(operation => {
+    // console.log(operation)
+    return operation === 'Subscription'
+  })
 }
 
 export function useExceptSubscription() {

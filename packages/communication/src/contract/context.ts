@@ -11,5 +11,5 @@ export declare interface Context {
   req?: Request
   connection?: ExecutionParams
   user: UserContext
-  isFromService: boolean
+  isFromService?: boolean
 }
