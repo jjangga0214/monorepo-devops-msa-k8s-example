@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Request } from 'express'
+import { ExecutionParams } from 'subscriptions-transport-ws'
 
 export declare interface UserContext {
   id?: string | undefined
@@ -7,7 +8,8 @@ export declare interface UserContext {
 }
 
 export declare interface Context {
-  req: Request
+  req?: Request
+  connection?: ExecutionParams
   user: UserContext
-  isFromService?: boolean
+  isFromService: boolean
 }
