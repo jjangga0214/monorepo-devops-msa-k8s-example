@@ -9,32 +9,35 @@ import createRemoteSchemas from './remote-schema'
 
 const debug = process.env.NODE_ENV === 'development'
 
+function createUserContextByAuth(headers): UserContext {
+  const authInfo = headers.Authorization || headers.authorization
+  const token = authInfo ? authInfo.replace('Bearer ', '').trim() : null
+  if (token) {
+    const VerifiedToken = verify(token, process.env.AUTH_SECRET)
+    return VerifiedToken.user
+  }
+  return {}
+}
+
 async function main() {
   const server = new ApolloServer({
     schema: mergeSchemas({
       schemas: await createRemoteSchemas(),
     }),
-    context: ({ req }): Context => {
-      const isFromService =
-        req.headers['x-service-secret'] === process.env.SERVICE_SECRET
+    context: ({ req, connection }): Context => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let user: UserContext = {}
-      if (isFromService) {
-        user = createUserContext(req)
-      } else {
-        const token = req.headers.authorization
-          ? req.headers.authorization.replace('Bearer ', '').trim()
-          : null
-        if (token) {
-          const VerifiedToken = verify(token, process.env.AUTH_SECRET)
-          user = VerifiedToken.user
-        }
-      }
-
+      const headers: { [key: string]: any } =
+        (connection && connection.context ? connection.context : req.headers) ||
+        {}
+      const isFromService =
+        headers['x-service-secret'] === process.env.SERVICE_SECRET
       return {
         req,
+        connection,
         isFromService,
-        user,
+        user: isFromService
+          ? createUserContext(headers)
+          : createUserContextByAuth(headers),
       }
     },
     debug,
