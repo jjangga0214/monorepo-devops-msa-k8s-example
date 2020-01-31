@@ -61,7 +61,7 @@ async function main() {
     ]),
     context: ({ req }) => ({
       req,
-      user: createUserContext(req),
+      user: createUserContext(req && req.headers ? req.headers : {}),
     }),
     debug: process.env.NODE_ENV === 'development',
   })
