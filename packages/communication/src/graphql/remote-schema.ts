@@ -3,11 +3,41 @@ import { split, ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { HttpLink } from 'apollo-link-http'
 import ws from 'ws'
 import fetch from 'cross-fetch'
-import { HeadersProvider } from '~communication/contract'
+import { GraphQLSchema } from 'graphql'
+import { HeadersProvider, Context } from '~communication/contract'
+
+export function provideHasuraHeaders(context: Context) {
+  const headers = {
+    'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+  }
+  /**
+   * If context is truthy, it's instantiated by an external request.
+   * If not, it happens when remote schema is fetched first time,
+   * without external request.
+   */
+  if (context) {
+    if (context.user && context.user.id) {
+      /**
+       * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
+       * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
+       */
+      const { id, role } = context.user
+      if (id) {
+        headers['x-hasura-user-id'] = id
+      }
+      if (role) {
+        // By convention, Hasura's role is lowercase, while our system uses uppercase.
+        headers['x-hasura-role'] = role.toLowerCase()
+      }
+    } else {
+      headers['x-hasura-role'] = 'anonymous'
+    }
+  }
+  return headers
+}
 
 export function createHttpLink(uri: string) {
   const httpLink = new HttpLink({
@@ -17,34 +47,44 @@ export function createHttpLink(uri: string) {
   return httpLink
 }
 
-export function createWsLink(uri: string) {
-  // Create WebSocket link with custom client
-  const client = new SubscriptionClient(
-    uri,
-    {
-      reconnect: true,
-    },
-    ws,
-  )
-  const wsLink = new WebSocketLink(client)
-  return wsLink
+export function createWsLink(uri: string, provideHeaders: HeadersProvider) {
+  return new ApolloLink(operation => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ctx: Record<string, any> = operation.getContext()
+    let headers = {}
+    if (ctx && ctx.graphqlContext) {
+      // This is the context returned by ApolloServer's context callback
+      const context: Context = ctx.graphqlContext
+      headers = provideHeaders(context)
+    }
+    const wsLink = new WebSocketLink({
+      uri,
+      options: {
+        reconnect: true,
+        connectionParams: {
+          headers,
+        },
+      },
+      webSocketImpl: ws,
+    })
+    return wsLink.request(operation)
+  })
 }
 
-export function createHeaderLink(provideHeader: HeadersProvider): ApolloLink {
+export function createHeadersLink(provideHeaders: HeadersProvider) {
   const contextLink = setContext((_graphqlRequest, { graphqlContext }) => {
     return {
-      headers: provideHeader(graphqlContext),
+      headers: provideHeaders(graphqlContext),
     }
   })
   return contextLink
 }
 
 export function spiltLinkBySubscription(options: {
-  baseLink: ApolloLink
   wsLink: ApolloLink
   httpLink: ApolloLink
 }) {
-  const { baseLink, wsLink, httpLink } = options
+  const { wsLink, httpLink } = options
   // Using the ability to split links, we can send data to each link
   // depending on what kind of operation is being sent
   const splittedLink = split(
@@ -55,13 +95,15 @@ export function spiltLinkBySubscription(options: {
         definition.operation === 'subscription'
       )
     },
-    baseLink.concat(wsLink), // <-- Use this if above function returns true
-    baseLink.concat(httpLink), // <-- Use this if above function returns false
+    wsLink, // <-- This will be executed if above function returns true
+    httpLink, // <-- This will be executed if above function returns false
   )
   return splittedLink
 }
 
-export async function createRemoteSchema(link: ApolloLink) {
+export async function createRemoteSchema(
+  link: ApolloLink,
+): Promise<GraphQLSchema> {
   const schema = await introspectSchema(link)
 
   const executableSchema = makeRemoteExecutableSchema({
@@ -73,45 +115,15 @@ export async function createRemoteSchema(link: ApolloLink) {
 
 export function createBasicLink(
   uri: string,
-  provideHeader: HeadersProvider = () => ({}),
+  provideHeaders: HeadersProvider = () => ({}),
 ) {
-  const headerContextLink = createHeaderLink(provideHeader)
   return spiltLinkBySubscription({
-    baseLink: headerContextLink,
-    httpLink: createHttpLink(uri),
-    wsLink: createWsLink(uri),
+    httpLink: createHeadersLink(provideHeaders).concat(createHttpLink(uri)),
+    wsLink: createWsLink(uri, provideHeaders),
   })
 }
 
-export const hasuraHeaderContextLink = createBasicLink(
+export const hasuraLink = createBasicLink(
   process.env.HASURA_ENDPOINT_GRAPHQL as string,
-  context => {
-    const headers = {
-      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-    }
-    /**
-     * If context is truthy, it's instantiated by an external request.
-     * If not, it happens when remote schema is fetched first time,
-     * without external request.
-     */
-    if (context) {
-      if (context.user && context.user.id) {
-        /**
-         * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
-         * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
-         */
-        const { id, role } = context.user
-        if (id) {
-          headers['x-hasura-user-id'] = id
-        }
-        if (role) {
-          // By convention, Hasura's role is lowercase, while our system uses uppercase.
-          headers['x-hasura-role'] = role.toLowerCase()
-        }
-      } else {
-        headers['x-hasura-role'] = 'anonymous'
-      }
-    }
-    return headers
-  },
+  provideHasuraHeaders,
 )

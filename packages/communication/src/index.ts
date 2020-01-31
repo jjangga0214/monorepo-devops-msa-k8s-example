@@ -5,7 +5,8 @@ export {
   createRemoteSchema,
   useExceptSubscription,
   useOnlySubscription,
-  hasuraHeaderContextLink,
+  hasuraLink,
+  provideHasuraHeaders,
 } from './graphql'
 
 export {
