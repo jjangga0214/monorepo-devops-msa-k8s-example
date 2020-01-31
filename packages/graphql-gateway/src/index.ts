@@ -59,7 +59,7 @@ async function main() {
     context: ({ req }): Context => {
       return {
         req,
-        user: createUserContext(req),
+        user: createUserContext(req && req.headers ? req.headers : {}),
       }
     },
     subscriptions: false, // As of writing, Apollo gateway does not support subscription, and requires this
