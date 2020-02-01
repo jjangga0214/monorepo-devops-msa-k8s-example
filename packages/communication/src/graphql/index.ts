@@ -4,4 +4,7 @@ export {
   hasuraLink,
   provideHasuraHeaders,
 } from './remote-schema'
-export { useExceptSubscription, useOnlySubscription } from './transform-schema'
+export {
+  useOnlyQueryAndMutation,
+  useOnlySubscription,
+} from './transform-schema'

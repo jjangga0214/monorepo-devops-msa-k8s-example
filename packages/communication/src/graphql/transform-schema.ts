@@ -8,15 +8,24 @@ import { /* transformSchema, */ FilterRootFields } from 'graphql-tools'
  * The gateway requires downstream services not exposing subscription at all.
  * Note that support for subscription on gateway is on its roadmap.
  */
-export function useOnlySubscription() {
-  return new FilterRootFields(operation => {
-    // console.log(operation)
+export function useOnlySubscription(
+  { except }: { except: string[] } = { except: [] },
+) {
+  return new FilterRootFields((operation, fieldName) => {
     return operation === 'Subscription'
+      ? !except.includes(fieldName)
+      : except.includes(fieldName)
   })
 }
 
-export function useExceptSubscription() {
-  return new FilterRootFields(operation => operation !== 'Subscription')
+export function useOnlyQueryAndMutation(
+  { except }: { except: string[] } = { except: [] },
+) {
+  return new FilterRootFields((operation, fieldName) => {
+    return operation !== 'Subscription'
+      ? !except.includes(fieldName)
+      : except.includes(fieldName)
+  })
 }
 
 /**

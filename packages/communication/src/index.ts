@@ -3,7 +3,7 @@ export { requestToGateway, requestToHasura } from './request'
 export {
   createBasicLink,
   createRemoteSchema,
-  useExceptSubscription,
+  useOnlyQueryAndMutation,
   useOnlySubscription,
   hasuraLink,
   provideHasuraHeaders,

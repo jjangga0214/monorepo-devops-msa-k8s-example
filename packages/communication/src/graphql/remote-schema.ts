@@ -9,7 +9,10 @@ import fetch from 'cross-fetch'
 import { GraphQLSchema } from 'graphql'
 import { HeadersProvider, Context } from '~communication/contract'
 
-export function provideHasuraHeaders(context: Context) {
+export function provideHasuraHeaders(
+  context: Context | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): { [key: string]: any } {
   const headers = {
     'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
   }
@@ -52,11 +55,8 @@ export function createWsLink(uri: string, provideHeaders: HeadersProvider) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ctx: Record<string, any> = operation.getContext()
     let headers = {}
-    if (ctx && ctx.graphqlContext) {
-      // This is the context returned by ApolloServer's context callback
-      const context: Context = ctx.graphqlContext
-      headers = provideHeaders(context)
-    }
+    const context: Context | undefined = ctx ? ctx.graphqlContext : undefined
+    headers = provideHeaders(context)
     const wsLink = new WebSocketLink({
       uri,
       options: {
