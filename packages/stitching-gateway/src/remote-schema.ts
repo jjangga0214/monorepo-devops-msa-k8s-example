@@ -1,4 +1,5 @@
 import { transformSchema } from 'apollo-server'
+import has from 'has'
 
 import {
   useOnlySubscription,
@@ -6,13 +7,13 @@ import {
   createBasicLink,
   hasuraLink,
   createUserHeaders,
-  useExceptSubscription,
+  useOnlyQueryAndMutation,
 } from '@jjangga0214/communication'
 
 async function hasura() {
   const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedHasuraSchema = transformSchema(hasuraSchema, [
-    useOnlySubscription(),
+    useOnlySubscription({ except: ['ping'] }),
   ])
   return transformedHasuraSchema
 }
@@ -24,7 +25,10 @@ async function graphqlGateway() {
       const headers = {
         ...createUserHeaders(context),
       }
-      if (!context || Object.keys(context).length === 0) {
+      if (
+        !context ||
+        Object.keys(context).filter(k => has(k, context)).length === 0
+      ) {
         headers['x-gateway-message'] = 'INIT'
       }
       return headers
@@ -33,7 +37,7 @@ async function graphqlGateway() {
   const graphqlGatewaySchema = await createRemoteSchema(graphqlGatewayLink)
   const transformedGraphqlGatewaySchema = transformSchema(
     graphqlGatewaySchema,
-    [useExceptSubscription()],
+    [useOnlyQueryAndMutation()],
   )
   return transformedGraphqlGatewaySchema
 }
