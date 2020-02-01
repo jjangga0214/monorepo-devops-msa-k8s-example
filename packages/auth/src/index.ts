@@ -24,7 +24,9 @@ const resolvers = {
   mutation_root: {
     login: async (_parent, args) => {
       const res = await requestToHasura(FIND_USER_BY_USERNAME, {
-        username: args.username,
+        variables: {
+          username: args.username,
+        },
       })
       if (res.user && res.user.length === 1) {
         const { id, password, role } = res.user[0]
