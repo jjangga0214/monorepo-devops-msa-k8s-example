@@ -17,7 +17,7 @@ export async function extend() {
     .forEach(({ name, args, type }) => {
       federationExtenstionConfig[type.name] = {
         // extend user {
-        extend: false,
+        extend: true,
         // user @key(fields: "id") {
         keyFields: [args[0].name],
         fields: {
