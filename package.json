@@ -18,6 +18,7 @@
     "build": "yarn r build",
     "build:fresh": "yarn clean && yarn build",
     "build:image": "cross-env DOCKER_BUILDKIT=1 docker build --build-arg PACKAGE=$PACKAGE -t $IMAGE_REGISTRY/$PACKAGE:$IMAGE_TAG .",
+    "clear":"yarn r clear",
     "clean": "shx rm -rf .build-cache *.log coverage junit.xml && yarn r clean",
     "test": "jest",
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
