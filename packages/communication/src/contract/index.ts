@@ -1,17 +1,13 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Request } from 'express'
 import { Context, UserContext } from './context'
 
 export { Context, UserContext } from './context'
-// export { Context } from './context'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export declare type HeadersProvider = (
-  context: Context,
+  context: Context | undefined,
 ) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
 { [key: string]: any }
 
-export function createUserHeaders(context: Context) {
+export function createUserHeaders(context: Context | undefined) {
   const headers = {}
   if (context && context.user) {
     const { id, role } = context.user
