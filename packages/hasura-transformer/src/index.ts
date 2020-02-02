@@ -39,7 +39,7 @@ async function main() {
     context: ({ req }): Context => {
       return {
         req,
-        user: createUserContext(req),
+        user: createUserContext(req && req.headers),
       }
     },
     debug: process.env.NODE_ENV === 'development',

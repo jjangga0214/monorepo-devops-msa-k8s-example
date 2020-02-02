@@ -20,7 +20,7 @@ async function main() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let user: UserContext = {}
       if (isFromService) {
-        user = createUserContext(req)
+        user = createUserContext(req && req.headers)
       } else {
         const token = req.headers.authorization
           ? req.headers.authorization.replace('Bearer ', '').trim()
