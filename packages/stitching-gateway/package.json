@@ -22,9 +22,10 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
-    "dev:debug": "yarn ts src/index.ts",
-    "dev": "pm2 start --restart-delay 250 --name stitching-gateway \"yarn dev:debug\"",
+    "ts": "yarn _ ts-node -r tsconfig-paths/register",
+    "tsd": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
+    "dev:debug": "yarn tsd src/index.ts",
+    "dev": "pm2 start --restart-delay 500 --name stitching-gateway \"yarn ts src/index.ts\"",
     "down": "pm2 delete stitching-gateway",
     "start": "node dist/index.js"
   },
