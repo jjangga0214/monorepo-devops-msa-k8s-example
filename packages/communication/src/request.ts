@@ -1,12 +1,16 @@
 import { GraphQLClient } from 'graphql-request'
 import { print, DocumentNode } from 'graphql'
-import { createUserHeaders } from '~communication/contract'
+import { createUserHeaders, Context } from '~communication/contract'
+import { provideHasuraHeaders } from '~communication/graphql'
 
 export async function requestToGateway(
   query: DocumentNode,
-  variables,
-  context,
+  variables = {},
+  options: {
+    context?: Context
+  } = {},
 ) {
+  const { context } = options
   const client = new GraphQLClient(
     process.env.STITCHING_GATEWAY_ENDPOINT as string,
     {
@@ -22,14 +26,18 @@ export async function requestToGateway(
 /**
  * This request would be useful if user id and role are not to be forwarded to Hasura.
  */
-export async function requestToHasura(query: DocumentNode, variables = {}) {
+export async function requestToHasura(
+  query: DocumentNode,
+  variables = {},
+  options: {
+    context?: Context
+  } = {},
+) {
+  const { context } = options
   const client = new GraphQLClient(
     process.env.HASURA_ENDPOINT_GRAPHQL as string,
     {
-      headers: {
-        'x-hasura-admin-secret': process.env
-          .HASURA_GRAPHQL_ADMIN_SECRET as string,
-      },
+      headers: provideHasuraHeaders(context),
     },
   )
   return client.request(print(query), variables)

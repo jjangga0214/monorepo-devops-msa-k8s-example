@@ -1,6 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import { ApolloServer } from 'apollo-server'
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway'
+import has from 'has'
+
 import {
   Context,
   createUserContext,
@@ -17,13 +19,15 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
      * However, when an actual user sends a request to gateway,
      * context would be initialized.
      */
-    if (Object.keys(context).length === 0) {
+    if (
+      !context ||
+      Object.keys(context).filter(k => has(context, k)).length === 0
+    ) {
       request.http.headers.set('x-gateway-message', 'INIT')
     } else if (context) {
       const userHeaders = createUserHeaders(context as Context)
       for (const key in userHeaders) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (userHeaders.hasOwnProperty(key)) {
+        if (has(userHeaders, key)) {
           request.http.headers.set(key, userHeaders[key])
         }
       }
@@ -48,8 +52,6 @@ const gateway = new (debug ? DevApolloGateway : ApolloGateway)({
   debug,
 })
 
-gateway.load()
-
 async function main() {
   const { schema, executor } = await gateway.load()
 
@@ -59,7 +61,7 @@ async function main() {
     context: ({ req }): Context => {
       return {
         req,
-        user: createUserContext(req),
+        user: createUserContext(req && req.headers),
       }
     },
     subscriptions: false, // As of writing, Apollo gateway does not support subscription, and requires this
@@ -76,4 +78,4 @@ async function main() {
     })
 }
 
-main()
+main().catch(console.error)

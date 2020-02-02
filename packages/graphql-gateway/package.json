@@ -22,9 +22,10 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "ts": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
-    "dev:debug": "yarn ts src/index.ts",
-    "dev": "pm2 start --restart-delay 250 --name graphql-gateway \"yarn dev:debug\"",
+    "tsd": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
+    "ts": "yarn _ ts-node -r tsconfig-paths/register",
+    "dev:debug": "yarn tsd src/index.ts",
+    "dev": "pm2 start --restart-delay 250 --name graphql-gateway \"yarn ts src/index.ts\"",
     "down": "pm2 delete graphql-gateway",
     "start": "node dist/index.js"
   },
@@ -33,7 +34,8 @@
     "@jjangga0214/communication": "^1.0.0",
     "apollo-server": "^2.9.16",
     "delay": "^4.3.0",
-    "graphql": "^14.5.8"
+    "graphql": "^14.5.8",
+    "has": "^1.0.3"
   },
   "devDependencies": {}
 }

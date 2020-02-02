@@ -2,19 +2,20 @@ import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
 import { transformSchema } from 'graphql-tools'
 import {
-  useExceptSubscription,
+  useOnlyQueryAndMutation,
   createRemoteSchema,
-  hasuraHeaderContextLink,
+  hasuraLink,
   createUserContext,
   Context,
 } from '@jjangga0214/communication'
 import { extend } from './extend-schema'
 
 async function main() {
-  const hasuraSchema = await createRemoteSchema(hasuraHeaderContextLink)
-  const transformedSchema = transformSchema(hasuraSchema, [
-    useExceptSubscription(),
-  ])
+  const hasuraSchema = await createRemoteSchema(hasuraLink)
+  const transformedSchema = hasuraSchema
+  // const transformedSchema = transformSchema(hasuraSchema, [
+  //   useOnlyQueryAndMutation(),
+  // ])
   const federationSchema = transformSchemaFederation(transformedSchema, {
     /**
      * Hasura's query type is "query_root", not "Query".
@@ -37,9 +38,10 @@ async function main() {
   const server = new ApolloServer({
     schema: federationSchema,
     context: ({ req }): Context => {
+      console.log(createUserContext(req && req.headers))
       return {
         req,
-        user: createUserContext(req),
+        user: createUserContext(req && req.headers),
       }
     },
     debug: process.env.NODE_ENV === 'development',

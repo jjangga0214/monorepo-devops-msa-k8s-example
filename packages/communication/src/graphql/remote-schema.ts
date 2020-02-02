@@ -7,7 +7,40 @@ import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { HttpLink } from 'apollo-link-http'
 import ws from 'ws'
 import fetch from 'cross-fetch'
-import { HeadersProvider } from '~communication/contract'
+import { HeadersProvider, Context } from '~communication/contract'
+
+export function provideHasuraHeaders(
+  context: Context | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): { [key: string]: any } {
+  const headers = {
+    'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+  }
+  /**
+   * If context is truthy, it's instantiated by an external request.
+   * If not, it happens when remote schema is fetched first time,
+   * without external request.
+   */
+  if (context) {
+    if (context.user) {
+      /**
+       * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
+       * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
+       */
+      const { id, role } = context.user
+      if (id) {
+        headers['x-hasura-user-id'] = id
+      }
+      if (role) {
+        // By convention, Hasura's role is lowercase, while our system uses uppercase.
+        headers['x-hasura-role'] = role.toLowerCase()
+      }
+    } else {
+      headers['x-hasura-role'] = 'anonymous'
+    }
+  }
+  return headers
+}
 
 export function createHttpLink(uri: string) {
   const httpLink = new HttpLink({
@@ -17,30 +50,40 @@ export function createHttpLink(uri: string) {
   return httpLink
 }
 
-export function createWsLink(uri: string) {
-  // Create WebSocket link with custom client
-  const client = new SubscriptionClient(
-    uri,
-    {
-      reconnect: true,
-    },
-    ws,
-  )
-  const wsLink = new WebSocketLink(client)
-  return wsLink
+export function createWsLink(uri: string, provideHeaders: HeadersProvider) {
+  return new ApolloLink(operation => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ctx: Record<string, any> = operation.getContext()
+    let headers = {}
+    const context: Context | undefined = ctx && ctx.graphqlContext
+    headers = provideHeaders(context)
+
+    const subscriptionClient = new SubscriptionClient(
+      uri,
+      {
+        reconnect: true,
+        connectionParams: {
+          headers,
+        },
+      },
+      ws,
+    )
+    const wsLink = new WebSocketLink(subscriptionClient)
+    return wsLink.request(operation)
+  })
 }
 
-export function createHeaderLink(provideHeader: HeadersProvider): ApolloLink {
+export function createHeadersLink(provideHeaders: HeadersProvider) {
   const contextLink = setContext((_graphqlRequest, { graphqlContext }) => {
     return {
-      headers: provideHeader(graphqlContext),
+      headers: provideHeaders(graphqlContext),
     }
   })
   return contextLink
 }
 
 export function spiltLinkBySubscription(options: {
-  baseLink: ApolloLink
+  baseLink?: ApolloLink
   wsLink: ApolloLink
   httpLink: ApolloLink
 }) {
@@ -55,8 +98,8 @@ export function spiltLinkBySubscription(options: {
         definition.operation === 'subscription'
       )
     },
-    baseLink.concat(wsLink), // <-- Use this if above function returns true
-    baseLink.concat(httpLink), // <-- Use this if above function returns false
+    baseLink ? baseLink.concat(wsLink) : wsLink, // <-- This will be executed if above function returns true
+    baseLink ? baseLink.concat(httpLink) : httpLink, // <-- This will be executed if above function returns false
   )
   return splittedLink
 }
@@ -73,45 +116,19 @@ export async function createRemoteSchema(link: ApolloLink) {
 
 export function createBasicLink(
   uri: string,
-  provideHeader: HeadersProvider = () => ({}),
+  provideHeaders: HeadersProvider = () => ({}),
 ) {
-  const headerContextLink = createHeaderLink(provideHeader)
   return spiltLinkBySubscription({
-    baseLink: headerContextLink,
-    httpLink: createHttpLink(uri),
-    wsLink: createWsLink(uri),
+    /**
+     * As of writing(2020 Feb), ContextLink does not have any effect on WebSocketLink, which is a bug.
+     * That's becuase ContextLink is only used on httpLink to set headers
+     */
+    httpLink: createHeadersLink(provideHeaders).concat(createHttpLink(uri)),
+    wsLink: createWsLink(uri, provideHeaders),
   })
 }
 
-export const hasuraHeaderContextLink = createBasicLink(
+export const hasuraLink = createBasicLink(
   process.env.HASURA_ENDPOINT_GRAPHQL as string,
-  context => {
-    const headers = {
-      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-    }
-    /**
-     * If context is truthy, it's instantiated by an external request.
-     * If not, it happens when remote schema is fetched first time,
-     * without external request.
-     */
-    if (context) {
-      if (context.user && context.user.id) {
-        /**
-         * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
-         * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
-         */
-        const { id, role } = context.user
-        if (id) {
-          headers['x-hasura-user-id'] = id
-        }
-        if (role) {
-          // By convention, Hasura's role is lowercase, while our system uses uppercase.
-          headers['x-hasura-role'] = role.toLowerCase()
-        }
-      } else {
-        headers['x-hasura-role'] = 'anonymous'
-      }
-    }
-    return headers
-  },
+  provideHasuraHeaders,
 )
