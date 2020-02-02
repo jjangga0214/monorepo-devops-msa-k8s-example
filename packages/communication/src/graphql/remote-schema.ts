@@ -50,30 +50,40 @@ export function createHttpLink(uri: string) {
   return httpLink
 }
 
-export function createWsLink(uri: string) {
-  // Create WebSocket link with custom client
-  const client = new SubscriptionClient(
-    uri,
-    {
-      reconnect: true,
-    },
-    ws,
-  )
-  const wsLink = new WebSocketLink(client)
-  return wsLink
+export function createWsLink(uri: string, provideHeaders: HeadersProvider) {
+  return new ApolloLink(operation => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ctx: Record<string, any> = operation.getContext()
+    let headers = {}
+    const context: Context | undefined = ctx && ctx.graphqlContext
+    headers = provideHeaders(context)
+
+    const subscriptionClient = new SubscriptionClient(
+      uri,
+      {
+        reconnect: true,
+        connectionParams: {
+          headers,
+        },
+      },
+      ws,
+    )
+    const wsLink = new WebSocketLink(subscriptionClient)
+    return wsLink.request(operation)
+  })
 }
 
-export function createHeaderLink(provideHeader: HeadersProvider): ApolloLink {
+export function createHeadersLink(provideHeaders: HeadersProvider): ApolloLink {
   const contextLink = setContext((_graphqlRequest, { graphqlContext }) => {
     return {
-      headers: provideHeader(graphqlContext),
+      headers: provideHeaders(graphqlContext),
     }
   })
   return contextLink
 }
 
 export function spiltLinkBySubscription(options: {
-  baseLink: ApolloLink
+  baseLink?: ApolloLink
   wsLink: ApolloLink
   httpLink: ApolloLink
 }) {
@@ -88,8 +98,8 @@ export function spiltLinkBySubscription(options: {
         definition.operation === 'subscription'
       )
     },
-    baseLink.concat(wsLink), // <-- Use this if above function returns true
-    baseLink.concat(httpLink), // <-- Use this if above function returns false
+    baseLink ? baseLink.concat(wsLink) : wsLink, // <-- Use this if above function returns true
+    baseLink ? baseLink.concat(httpLink) : httpLink, // <-- Use this if above function returns false
   )
   return splittedLink
 }
@@ -106,13 +116,15 @@ export async function createRemoteSchema(link: ApolloLink) {
 
 export function createBasicLink(
   uri: string,
-  provideHeader: HeadersProvider = () => ({}),
+  provideHeaders: HeadersProvider = () => ({}),
 ) {
-  const headerContextLink = createHeaderLink(provideHeader)
   return spiltLinkBySubscription({
-    baseLink: headerContextLink,
-    httpLink: createHttpLink(uri),
-    wsLink: createWsLink(uri),
+    /**
+     * As of writing(2020 Feb), ContextLink does not have any effect on WebSocketLink, which is a bug.
+     * That's becuase ContextLink is only used on httpLink to set headers
+     */
+    httpLink: createHeadersLink(provideHeaders).concat(createHttpLink(uri)),
+    wsLink: createWsLink(uri, provideHeaders),
   })
 }
 
