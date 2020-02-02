@@ -1,6 +1,8 @@
 export {
   createBasicLink,
   createRemoteSchema,
-  hasuraHeaderContextLink,
+  hasuraLink,
+  provideHasuraHeaders,
 } from './remote-schema'
+
 export { useExceptSubscription, useOnlySubscription } from './transform-schema'

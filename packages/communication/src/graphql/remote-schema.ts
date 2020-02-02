@@ -7,7 +7,40 @@ import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { HttpLink } from 'apollo-link-http'
 import ws from 'ws'
 import fetch from 'cross-fetch'
-import { HeadersProvider } from '~communication/contract'
+import { HeadersProvider, Context } from '~communication/contract'
+
+export function provideHasuraHeaders(
+  context: Context | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): { [key: string]: any } {
+  const headers = {
+    'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+  }
+  /**
+   * If context is truthy, it's instantiated by an external request.
+   * If not, it happens when remote schema is fetched first time,
+   * without external request.
+   */
+  if (context) {
+    if (context.user) {
+      /**
+       * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
+       * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
+       */
+      const { id, role } = context.user
+      if (id) {
+        headers['x-hasura-user-id'] = id
+      }
+      if (role) {
+        // By convention, Hasura's role is lowercase, while our system uses uppercase.
+        headers['x-hasura-role'] = role.toLowerCase()
+      }
+    } else {
+      headers['x-hasura-role'] = 'anonymous'
+    }
+  }
+  return headers
+}
 
 export function createHttpLink(uri: string) {
   const httpLink = new HttpLink({
@@ -83,35 +116,7 @@ export function createBasicLink(
   })
 }
 
-export const hasuraHeaderContextLink = createBasicLink(
+export const hasuraLink = createBasicLink(
   process.env.HASURA_ENDPOINT_GRAPHQL as string,
-  context => {
-    const headers = {
-      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-    }
-    /**
-     * If context is truthy, it's instantiated by an external request.
-     * If not, it happens when remote schema is fetched first time,
-     * without external request.
-     */
-    if (context) {
-      if (context.user && context.user.id) {
-        /**
-         * If context is truthy, user is guaranteed to exist in it, by custom context instantiation.
-         * If its id is undefined, it means the request is not authenticated, thus the role header should be "anonymous"
-         */
-        const { id, role } = context.user
-        if (id) {
-          headers['x-hasura-user-id'] = id
-        }
-        if (role) {
-          // By convention, Hasura's role is lowercase, while our system uses uppercase.
-          headers['x-hasura-role'] = role.toLowerCase()
-        }
-      } else {
-        headers['x-hasura-role'] = 'anonymous'
-      }
-    }
-    return headers
-  },
+  provideHasuraHeaders,
 )

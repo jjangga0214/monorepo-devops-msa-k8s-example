@@ -4,14 +4,14 @@ import { transformSchema } from 'graphql-tools'
 import {
   useExceptSubscription,
   createRemoteSchema,
-  hasuraHeaderContextLink,
+  hasuraLink,
   createUserContext,
   Context,
 } from '@jjangga0214/communication'
 import { extend } from './extend-schema'
 
 async function main() {
-  const hasuraSchema = await createRemoteSchema(hasuraHeaderContextLink)
+  const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedSchema = transformSchema(hasuraSchema, [
     useExceptSubscription(),
   ])

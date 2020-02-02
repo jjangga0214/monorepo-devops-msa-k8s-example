@@ -4,12 +4,12 @@ import {
   useOnlySubscription,
   createRemoteSchema,
   createBasicLink,
-  hasuraHeaderContextLink,
+  hasuraLink,
   createUserHeaders,
 } from '@jjangga0214/communication'
 
 async function hasura() {
-  const hasuraSchema = await createRemoteSchema(hasuraHeaderContextLink)
+  const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedHasuraSchema = transformSchema(hasuraSchema, [
     useOnlySubscription(),
   ])
