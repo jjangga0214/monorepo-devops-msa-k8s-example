@@ -18,7 +18,7 @@ export function useOnlySubscription(
   )
 }
 
-export function useExceptSubscription(
+export function useOnlyQueryAndMutation(
   { except }: { except: string[] } = { except: [] },
 ) {
   return new FilterRootFields((operation, fieldName) =>

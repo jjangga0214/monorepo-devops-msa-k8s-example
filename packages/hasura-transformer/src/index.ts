@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server'
 import { transformSchemaFederation } from 'graphql-transform-federation'
 import { transformSchema } from 'graphql-tools'
 import {
-  useExceptSubscription,
+  useOnlyQueryAndMutation,
   createRemoteSchema,
   hasuraLink,
   createUserContext,
@@ -13,7 +13,7 @@ import { extend } from './extend-schema'
 async function main() {
   const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedSchema = transformSchema(hasuraSchema, [
-    useExceptSubscription(),
+    useOnlyQueryAndMutation(),
   ])
   const federationSchema = transformSchemaFederation(transformedSchema, {
     /**
