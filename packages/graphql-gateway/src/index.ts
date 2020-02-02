@@ -6,6 +6,7 @@ import {
   createUserContext,
   createUserHeaders,
 } from '@jjangga0214/communication'
+import has from 'has'
 import { DevApolloGateway } from './dev'
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
@@ -22,8 +23,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
     } else if (context) {
       const userHeaders = createUserHeaders(context as Context)
       for (const key in userHeaders) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (userHeaders.hasOwnProperty(key)) {
+        if (has(userHeaders, key)) {
           request.http.headers.set(key, userHeaders[key])
         }
       }
@@ -47,8 +47,6 @@ const gateway = new (debug ? DevApolloGateway : ApolloGateway)({
   },
   debug,
 })
-
-gateway.load()
 
 async function main() {
   const { schema, executor } = await gateway.load()
