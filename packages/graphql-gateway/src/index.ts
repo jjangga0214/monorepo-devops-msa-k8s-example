@@ -18,9 +18,12 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
      * However, when an actual user sends a request to gateway,
      * context would be initialized.
      */
-    if (Object.keys(context).length === 0) {
+    if (
+      !context ||
+      Object.keys(context).filter(k => has(context, k)).length === 0
+    ) {
       request.http.headers.set('x-gateway-message', 'INIT')
-    } else if (context) {
+    } else {
       const userHeaders = createUserHeaders(context as Context)
       for (const key in userHeaders) {
         if (has(userHeaders, key)) {
