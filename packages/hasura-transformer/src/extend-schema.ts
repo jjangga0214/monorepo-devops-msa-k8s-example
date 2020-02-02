@@ -1,4 +1,4 @@
-import { requestToHasura } from '@jjangga0214/communication'
+import { requestToHasura, Context } from '@jjangga0214/communication'
 import { delegateToSchema } from 'graphql-tools'
 import { INTROSPECT_QUERY } from '~hasura-transformer/graphql/queries'
 
@@ -26,8 +26,7 @@ export async function extend() {
             external: false,
           },
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolveReference(reference, context: { [key: string]: any }, info) {
+        resolveReference(reference, context: Context, info) {
           return delegateToSchema({
             schema: info.schema,
             operation: 'query',
