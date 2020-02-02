@@ -16,7 +16,7 @@ export class DevApolloGateway extends ApolloGateway {
     super(config)
 
     // Setup logging facilities, scoped under the appropriate name.
-    this.customLogger = loglevel.getLogger(`apollo-gateway:`)
+    this.customLogger = loglevel.getLogger(`apollo-gateway::`)
 
     // Support DEBUG environment variable, à la https://npm.im/debug/.
     loglevelDebug(this.customLogger)
@@ -41,7 +41,7 @@ export class DevApolloGateway extends ApolloGateway {
           .map(sentence => !arg.includes(sentence))
           .reduce((previous, current) => previous && current)
       ) {
-        console.log(arg)
+        this.customLogger.debug(arg)
       }
     }
 
