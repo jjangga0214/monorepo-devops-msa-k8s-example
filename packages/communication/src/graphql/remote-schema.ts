@@ -73,7 +73,7 @@ export function createWsLink(uri: string, provideHeaders: HeadersProvider) {
   })
 }
 
-export function createHeadersLink(provideHeaders: HeadersProvider): ApolloLink {
+export function createHeadersLink(provideHeaders: HeadersProvider) {
   const contextLink = setContext((_graphqlRequest, { graphqlContext }) => {
     return {
       headers: provideHeaders(graphqlContext),
