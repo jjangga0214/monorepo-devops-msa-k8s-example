@@ -48,7 +48,7 @@ export class DevApolloGateway extends ApolloGateway {
     const pollSchemas = async () => {
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        await delay(500)
+        await delay(1000)
         this.load()
       }
     }

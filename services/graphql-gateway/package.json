@@ -25,7 +25,7 @@
     "ts": "yarn _ ts-node -r tsconfig-paths/register",
     "tsd": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
     "dev:debug": "yarn tsd src/index.ts",
-    "dev": "pm2 start --restart-delay 500 --name graphql-gateway \"yarn ts src/index.ts\"",
+    "dev": "pm2 start --restart-delay 1000 --name graphql-gateway \"yarn ts src/index.ts\"",
     "down": "pm2 delete graphql-gateway",
     "start": "node dist/index.js"
   },
