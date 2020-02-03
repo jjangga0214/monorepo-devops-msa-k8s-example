@@ -21,7 +21,7 @@
     "test:ci": "jest --coverage --ci --reporters='jest-junit'",
     "coverage": "jest --coverage",
     "coverage:show": "live-server coverage/lcov-report",
-    "ts": "yarn _ ts-node -r tsconfig-paths/register",
+    "ts": "yarn _ ts-node-dev -r tsconfig-paths/register",
     "tsd": "yarn _ ts-node-dev --respawn -r tsconfig-paths/register",
     "dev:debug": "yarn tsd src/index.ts",
     "dev": "pm2 start --restart-delay 1000 --name hasura-transformer \"yarn ts src/index.ts\"",
