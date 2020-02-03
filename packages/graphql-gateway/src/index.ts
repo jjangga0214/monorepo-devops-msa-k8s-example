@@ -36,22 +36,27 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 
 const debug = process.env.NODE_ENV === 'development'
 
-const gateway = new (debug ? DevApolloGateway : ApolloGateway)({
-  serviceList: [
-    {
-      name: 'hasura-transformer',
-      url: process.env.HASURA_TRANSFORMER_ENDPOINT,
+let gateway: ApolloGateway | null = null
+
+function createGateway() {
+  return new (debug ? DevApolloGateway : ApolloGateway)({
+    serviceList: [
+      {
+        name: 'hasura-transformer',
+        url: process.env.HASURA_TRANSFORMER_ENDPOINT,
+      },
+      { name: 'auth', url: process.env.AUTH_ENDPOINT },
+      // more services
+    ],
+    buildService({ url }) {
+      return new AuthenticatedDataSource({ url })
     },
-    { name: 'auth', url: process.env.AUTH_ENDPOINT },
-    // more services
-  ],
-  buildService({ url }) {
-    return new AuthenticatedDataSource({ url })
-  },
-  debug,
-})
+    debug,
+  })
+}
 
 async function main() {
+  gateway = createGateway()
   const { schema, executor } = await gateway.load()
 
   const server = new ApolloServer({
@@ -77,4 +82,11 @@ async function main() {
     })
 }
 
-main()
+main().catch(e => {
+  console.error(e)
+  /**
+   * Process does not exit by error on apollo gateway.
+   * For example, when there's an error when fetching service schemas.
+   * */
+  process.exit(1)
+})

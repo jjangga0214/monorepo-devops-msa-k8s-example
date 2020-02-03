@@ -52,6 +52,9 @@ export class DevApolloGateway extends ApolloGateway {
         this.load()
       }
     }
-    pollSchemas()
+    pollSchemas().catch(e => {
+      console.error(e)
+      process.exit(1)
+    })
   }
 }

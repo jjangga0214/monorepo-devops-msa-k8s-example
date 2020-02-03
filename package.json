@@ -10,7 +10,7 @@
   "scripts": {
     "pkg": "yarn workspace @jjangga0214/$PACKAGE",
     "r": "lerna run --parallel",
-    "dev": "yarn r dev --ignore '{@jjangga0214/api,@jjangga0214/hello,@jjangga0214/stitching-gateway,@jjangga0214/graphql-gateway,@jjangga0214/pulumi,@jjangga0214/workflow,@jjangga0214/communication}'",
+    "dev": "yarn r dev --ignore '{@jjangga0214/stitching-gateway,@jjangga0214/pulumi,@jjangga0214/workflow,@jjangga0214/communication}'",
     "down": "yarn r down",
     "log": "pm2 logs",
     "seed": "yarn r seed",
