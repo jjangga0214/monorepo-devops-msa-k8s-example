@@ -12,7 +12,7 @@
   "scripts": {
     "pkg": "yarn workspace @jjangga0214/$PACKAGE",
     "r": "lerna run --parallel",
-    "dev": "yarn r dev --ignore '{@jjangga0214/stitching-gateway,@jjangga0214/pulumi,@jjangga0214/workflow,@jjangga0214/communication}'",
+    "dev": "yarn r dev --ignore \"{$(ls ./packages | xargs echo | sed 's/ /,/g'),$(ls ./others | xargs echo | sed 's/ /,/g')}\"",
     "down": "yarn r down",
     "log": "pm2 logs",
     "seed": "yarn r seed",
