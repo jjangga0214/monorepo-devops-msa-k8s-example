@@ -49,4 +49,7 @@ async function main() {
       console.log(`🚀 Server ready at ${url}`)
     })
 }
-main()
+main().catch(e => {
+  console.error(e)
+  process.exit(1)
+})
