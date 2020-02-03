@@ -6,5 +6,5 @@
     "tsBuildInfoFile": "../../.build-cache/stitching-gateway.tsbuildinfo"
   },
   "include": ["src"],
-  "references": [{ "path": "../communication/tsconfig.build.json", "prepend": false }]
+  "references": [{ "path": "../../packages/communication/tsconfig.build.json", "prepend": false }]
 }
