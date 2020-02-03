@@ -4,6 +4,7 @@ import {
   createUserContext,
   UserContext,
   Context,
+  keepReplacingSchema,
 } from '@jjangga0214/communication'
 import createRemoteSchemas from './remote-schema'
 
@@ -20,11 +21,15 @@ function createUserContextByAuth(headers: { [key: string]: any }): UserContext {
   return {}
 }
 
+async function createSchema() {
+  return mergeSchemas({
+    schemas: await createRemoteSchemas(),
+  })
+}
+
 async function main() {
   const server = new ApolloServer({
-    schema: mergeSchemas({
-      schemas: await createRemoteSchemas(),
-    }),
+    schema: await createSchema(),
     context: ({ req, connection }): Context => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const headers: { [key: string]: any } =
@@ -43,6 +48,13 @@ async function main() {
     },
     debug,
   })
+
+  if (debug) {
+    keepReplacingSchema(server, createSchema).catch(e => {
+      console.error(e)
+      process.exit(1)
+    })
+  }
 
   server
     .listen({

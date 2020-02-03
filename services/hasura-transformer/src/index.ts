@@ -7,10 +7,13 @@ import {
   hasuraLink,
   createUserContext,
   Context,
+  keepReplacingSchema,
 } from '@jjangga0214/communication'
 import { extend } from './extend-schema'
 
-async function main() {
+const debug = process.env.NODE_ENV === 'development'
+
+async function createSchema() {
   const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedSchema = transformSchema(hasuraSchema, [
     useOnlyQueryAndMutation(),
@@ -33,17 +36,27 @@ async function main() {
     // },
     ...(await extend()),
   })
+  return federationSchema
+}
 
+async function main() {
   const server = new ApolloServer({
-    schema: federationSchema,
+    schema: await createSchema(),
     context: ({ req }): Context => {
       return {
         req,
         user: createUserContext(req && req.headers),
       }
     },
-    debug: process.env.NODE_ENV === 'development',
+    debug,
   })
+
+  if (debug) {
+    keepReplacingSchema(server, createSchema).catch(e => {
+      console.error(e)
+      process.exit(1)
+    })
+  }
 
   server
     .listen({

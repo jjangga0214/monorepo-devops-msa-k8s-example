@@ -6,6 +6,7 @@ export {
   useOnlyQueryAndMutation,
   useOnlySubscription,
   hasuraLink,
+  keepReplacingSchema,
 } from './graphql'
 
 export {
