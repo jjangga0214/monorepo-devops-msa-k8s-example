@@ -2,7 +2,7 @@ import { transformSchema } from 'apollo-server'
 import has from 'has'
 
 import {
-  useOnlySubscription,
+  // useOnlySubscription,
   useOnlyQueryAndMutation,
   createRemoteSchema,
   createBasicLink,
@@ -13,7 +13,7 @@ import {
 async function hasura() {
   const hasuraSchema = await createRemoteSchema(hasuraLink)
   const transformedHasuraSchema = transformSchema(hasuraSchema, [
-    useOnlySubscription(),
+    // useOnlySubscription(), // Refer to https://github.com/graphql/graphql-js/pull/2422
   ])
   return transformedHasuraSchema
 }
@@ -43,5 +43,19 @@ async function graphqlGateway() {
 }
 
 export default async function() {
+  /**
+   * Left and right order matters.
+   * Right one(last one) overrides left one's type and resolvers.
+   * graphql-gateway should override hasura.
+   * hasura should only serve subscription.
+   * It's queries and mutations should be proxied by graphql-gateway and hasura-transformer.
+   * This will let hasura-transformer be able to extend other services types.
+   * (So this seperation is not needed if hasura-transformer is only "refered" by other services,
+   * and it does not refer other services.)
+   *
+   * Note. Refer to these links for conflict resolution.
+   *   - https://www.apollographql.com/docs/apollo-server/features/schema-stitching/#ontypeconflict
+   *   - https://github.com/apollographql/graphql-tools/issues/496
+   * */
   return [await hasura(), await graphqlGateway()]
 }
