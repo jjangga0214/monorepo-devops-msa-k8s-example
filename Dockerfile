@@ -5,19 +5,21 @@ ARG PACKAGE
 ENV PACKAGE ${PACKAGE}
 ENV YARN_CACHE_FOLDER /repo/yarn-cache
 WORKDIR /repo
-COPY build-helper ./build-helper/
-RUN --mount=type=cache,target=/repo/yarn-cache yarn --cwd /repo/build-helper install --silent --frozen-lockfile
+COPY others/workflow ./others/workflow/
 # install devDependencies on project root
 COPY package.json yarn.lock ./
 RUN --mount=type=cache,target=/repo/yarn-cache yarn install --silent --frozen-lockfile
 COPY lerna.json LICENSE tsconfig.* ./
+COPY others ./others/
 COPY packages ./packages/
+COPY services ./services/
 # delete unnecessary packages
-RUN yarn --cwd /repo/build-helper run prune
+RUN yarn --cwd /repo/others/workflow run prune
 RUN --mount=type=cache,target=/repo/yarn-cache yarn install --silent --frozen-lockfile
 RUN yarn pkg build
 # delete unnecessary stuff except compiled code
-RUN yarn --cwd /repo/build-helper run clean
+RUN yarn --cwd /repo/others/workflow run clean
+RUN rm -rf /repo/others/workflow
 
 FROM node:12-alpine
 ARG PACKAGE

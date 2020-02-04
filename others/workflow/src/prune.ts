@@ -29,12 +29,14 @@ async function prune() {
   }
   const referencedPkgs: LernaPkgInfo[] = JSON.parse(stdout)
   const referencedPkgsPaths = referencedPkgs.map(pkg => pkg.location)
-  const pkgsPath = path.resolve(rootPath, 'packages')
+  const pkgsPaths = ['packages', 'services', 'others'].map(pkgsDirName =>
+    path.resolve(rootPath, pkgsDirName),
+  )
   await del(
     [
-      `${pkgsPath}/**`,
-      `!${pkgsPath}`,
+      ...pkgsPaths.flatMap(pkgsPath => [`${pkgsPath}/**`, `!${pkgsPath}`]),
       ...referencedPkgsPaths.map(pkgPath => `!${pkgPath}`),
+      `!${__dirname}`,
     ],
     {
       force: true, // enable deleting path outside of cwd

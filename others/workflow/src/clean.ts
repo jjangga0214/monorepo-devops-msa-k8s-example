@@ -28,23 +28,27 @@ async function cleanRoot() {
  * Clean unnecessary files in each packages
  */
 async function cleanPkg() {
-  const pkgsPath = path.resolve(rootPath, 'packages')
-  const pkgs = await fs.readdir(pkgsPath) // .e.g ['api', 'hasura', 'hello']
-  for (const pkg of pkgs) {
-    const pkgPath = path.join(pkgsPath, pkg) // e.g. './packages/api'
-    await del(
-      [
-        `${pkgPath}/**`,
-        `!${pkgPath}`,
-        `!${pkgPath}/dist`,
-        `!${pkgPath}/package.json`,
-        `!${pkgPath}/node_modules`,
-        `!${pkgPath}/yarn.lock`, // For debugging
-      ],
-      {
-        force: true, // Enable deleting path outside of cwd
-      },
-    )
+  const pkgsPaths = ['packages', 'services', 'others'].map(pkgsDirName =>
+    path.resolve(rootPath, pkgsDirName),
+  )
+  for (const pkgsPath of pkgsPaths) {
+    const pkgs = await fs.readdir(pkgsPath) // .e.g ['api', 'hasura', 'hello']
+    for (const pkg of pkgs) {
+      const pkgPath = path.join(pkgsPath, pkg) // e.g. './packages/api'
+      await del(
+        [
+          `${pkgPath}/**`,
+          `!${pkgPath}`,
+          `!${pkgPath}/dist`,
+          `!${pkgPath}/package.json`,
+          `!${pkgPath}/node_modules`,
+          `!${pkgPath}/yarn.lock`, // For debugging
+        ],
+        {
+          force: true, // Enable deleting path outside of cwd
+        },
+      )
+    }
   }
 }
 
